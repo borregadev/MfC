@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematics for Computing: Interactive Study Guide</title>
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --text-muted: #94a3b8;
+            --text-main: #f8fafc;
+            --border-color: #334155;
+            --hover-bg: #0284c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--accent-blue);
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Top Level Session Switcher */
+        .session-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .session-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 14px;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .session-btn:active {
+            transform: scale(0.98);
+        }
+
+        .session-btn.active {
+            background-color: var(--accent-blue);
+            color: var(--bg-main);
+            border-color: var(--accent-blue);
+        }
+
+        /* Sub-Tab Bar (Horizontally Scrollable) */
+        .subtab-wrapper {
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .subtab-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .subtab-bar {
+            display: inline-flex;
+            gap: 8px;
+        }
+
+        .subtab-btn {
+            padding: 10px 16px;
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .subtab-btn:active {
+            opacity: 0.8;
+        }
+
+        .subtab-btn.active {
+            color: var(--text-main);
+            border-color: var(--accent-blue);
+            background-color: rgba(56, 189, 248, 0.15);
+        }
+
+        /* Views Layout */
+        .session-view {
+            display: none;
+        }
+
+        .session-view.active {
+            display: block;
+        }
+
+        .subtopic-content {
+            display: none;
+        }
+
+        .subtopic-content.active {
+            display: block;
+        }
+
+        /* Responsive Grids */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+        }
+
+        .card h3 {
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        ul {
+            list-style-type: square;
+            padding-left: 20px;
+            color: var(--text-muted);
+        }
+
+        ul li {
+            margin-bottom: 8px;
+        }
+
+        ul li strong {
+            color: var(--text-main);
+        }
+
+        /* Interactive Accordion */
+        .accordion-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 14px 18px;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-weight: 600;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .accordion-header:active {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .accordion-header::after {
+            content: '+';
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            content: '−';
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+            padding: 0 18px;
+            color: var(--text-muted);
+        }
+
+        .accordion-item.active .accordion-body {
+            max-height: 600px;
+            padding: 0 18px 18px 18px;
+        }
+
+        /* Visual SVG Section */
+        .svg-container {
+            width: 100%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Code and Table Formatting */
+        .table-box, .code-box {
+            width: 100%;
+            overflow-x: auto;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 480px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent-blue);
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        code {
+            font-family: monospace;
+            color: var(--accent-blue);
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        pre {
+            padding: 16px;
+            color: var(--text-main);
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* Flashcards Section */
+        .flashcard-section {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            width: 100%;
+            max-width: 480px;
+            height: 220px;
+            margin: 16px auto;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            border-radius: 8px;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--accent-blue);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            white-space: pre-line;
+        }
+
+        .card-front {
+            background-color: #1a2436;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .card-back {
+            background-color: #0c1524;
+            color: var(--accent-blue);
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .fc-btn {
+            padding: 10px 20px;
+            background-color: var(--accent-blue);
+            color: var(--bg-main);
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .fc-btn:active {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+            .session-btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Mathematics for Computing</h1>
+        <p class="subtitle">Sessions 1 & 2 Comprehensive Interactive Study Guide</p>
+    </header>
+
+    <!-- Top Level Session Switcher -->
+    <nav class="session-nav">
+        <button class="session-btn active" onclick="switchSession(this, 's1a')">S1: Framework & Expressions</button>
+        <button class="session-btn" onclick="switchSession(this, 's1b')">S1: Binary Numbers</button>
+        <button class="session-btn" onclick="switchSession(this, 's2a')">S2: Hexadecimal Base</button>
+        <button class="session-btn" onclick="switchSession(this, 's2b')">S2: Boolean Logic</button>
+    </nav>
+
+    <!-- ================= SESSION 1 PART A ================= -->
+    <section id="s1a" class="session-view active">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's1a', 'module-info')">Module Framework</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'precedence')">Order of Precedence</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'parentheses')">Parentheses Rules</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'exponents')">Exponents / Indices</button>
+            </div>
+        </div>
+
+        <div id="module-info" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Course Structure</h3>
+                    <ul>
+                        <li><strong>Weekly Sessions:</strong> 3-hour weekly block (1.5h lecture + 1.5h practice class).</li>
+                        <li><strong>Practice Classes:</strong> Split into 3 groups to solve online quizzes; critical for passing.</li>
+                        <li><strong>Required Materials:</strong> Writing pad, colored pens, ruler, slide access.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Assessments</h3>
+                    <ul>
+                        <li><strong>Quiz 1 (25%):</strong> Due Week 5 on Moodle.</li>
+                        <li><strong>Quiz 2 (75%):</strong> Due Week 11 on Moodle.</li>
+                        <li><strong>Policy:</strong> 100% of final grade is based on these two quizzes. Deadlines are non-negotiable.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="precedence" class="subtopic-content">
+            <div class="svg-container">
+                <svg viewBox="0 0 500 80" width="100%" height="80">
+                    <defs>
+                        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
+                        </marker>
+                    </defs>
+                    <rect x="10" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="55" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">() Parentheses</text>
+                    <line x1="100" y1="40" x2="130" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+                    <rect x="130" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="175" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">xᵃ Exponents</text>
+                    <line x1="220" y1="40" x2="250" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+                    <rect x="250" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="295" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">× / ÷</text>
+                    <line x1="340" y1="40" x2="370" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+                    <rect x="370" y="20" width="120" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="430" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">+ / − then =</text>
+                </svg>
+            </div>
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Operator Symbol</th>
+                            <th>Operation</th>
+                            <th>Precedence Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>( )</code></td><td>Parentheses</td><td>1 (Highest)</td></tr>
+                        <tr><td><code>xⁿ</code></td><td>Exponents / Indices</td><td>2</td></tr>
+                        <tr><td><code>× , /</code></td><td>Multiplication & Division</td><td>3</td></tr>
+                        <tr><td><code>+ , -</code></td><td>Addition & Subtraction</td><td>4</td></tr>
+                        <tr><td><code>=</code></td><td>Equality Sign</td><td>5 (Lowest)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="parentheses" class="subtopic-content">
+            <div class="card">
+                <h3>Nested Parentheses Rule</h3>
+                <ul>
+                    <li>Scan left-to-right for the <strong>first right parenthesis ')'</strong>.</li>
+                    <li>Locate the <strong>closest left parenthesis '('</strong> directly to its left.</li>
+                    <li>Evaluate the inner math expression first.</li>
+                </ul>
+            </div>
+            <div class="code-box">
+                <pre>Evaluating: ((6 + (5 + 3) × 12) / (3 + 5))
+
+Step 1: Inner (5 + 3) = 8 => ((6 + 8 × 12) / (3 + 5))
+Step 2: Inner (6 + 8 × 12) => 8 × 12 = 96, 6 + 96 = 102 => (102 / (3 + 5))
+Step 3: Inner (3 + 5) = 8 => 102 / 8
+Step 4: Final calculation = 12.75</pre>
+            </div>
+        </div>
+
+        <div id="exponents" class="subtopic-content">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Exponent Rules</h3>
+                    <ul>
+                        <li><strong>Base-Index Form:</strong> <code>Base<sup>Index</sup></code>.</li>
+                        <li><strong>Zero Power Rule:</strong> Any non-zero number to power 0 equals <strong>1</strong> (e.g., 5<sup>0</sup> = 1).</li>
+                        <li><strong>Base 10 Powers:</strong> 10<sup>n</sup> equals 1 with <strong>n zeros</strong> (e.g., 10<sup>5</sup> = 100,000).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 1 Part A Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc1a')">
+                <div id="fc1a" class="flashcard">
+                    <div class="card-face card-front">What is the operator order of precedence?</div>
+                    <div class="card-face card-back">1. Parentheses ()\n2. Exponents\n3. Multiplication & Division\n4. Addition & Subtraction\n5. Equality (=)</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s1a')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s1a')">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SESSION 1 PART B ================= -->
+    <section id="s1b" class="session-view">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's1b', 'bin-concepts')">Binary Concepts</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's1b', 'bin-dec')">Binary to Decimal</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's1b', 'dec-bin')">Decimal to Binary</button>
+            </div>
+        </div>
+
+        <div id="bin-concepts" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Base 2 (Binary) Representation</h3>
+                    <ul>
+                        <li>Computers store data using binary digits (<strong>bits</strong>): 0 and 1.</li>
+                        <li><strong>MSB:</strong> Most Significant Bit (leftmost).</li>
+                        <li><strong>LSB:</strong> Least Significant Bit (rightmost).</li>
+                        <li>Subscripts show the base: e.g., <code>1101<sub>2</sub></code> vs <code>13<sub>10</sub></code>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="bin-dec" class="subtopic-content">
+            <div class="code-box">
+                <pre>Converting Binary 10011₂ to Decimal:
+
+Position weights from right (2⁰, 2¹, 2², 2³, 2⁴):
+= (1 × 2⁴) + (0 × 2³) + (0 × 2²) + (1 × 2¹) + (1 × 2⁰)
+= 16 + 0 + 0 + 2 + 1
+= 19₁₀</pre>
+            </div>
+        </div>
+
+        <div id="dec-bin" class="subtopic-content">
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Value</th>
+                            <th>Even Value (Value - 1 if odd)</th>
+                            <th>Bit Output (Value - Even)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>13</td><td>12</td><td>1 (LSB)</td></tr>
+                        <tr><td>6</td><td>6</td><td>0</td></tr>
+                        <tr><td>3</td><td>2</td><td>1</td></tr>
+                        <tr><td>1</td><td>0</td><td>1 (MSB)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p style="color: var(--accent-blue); font-weight: bold;">Reading bottom to top gives: 1101₂</p>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 1 Part B Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc1b')">
+                <div id="fc1b" class="flashcard">
+                    <div class="card-face card-front">Convert Decimal 13 to Binary.</div>
+                    <div class="card-face card-back">13₁₀ = 1101₂</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s1b')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s1b')">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SESSION 2 PART A ================= -->
+    <section id="s2a" class="session-view">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's2a', 'hex-intro')">Hexadecimal Digits</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's2a', 'hex-bin-table')">4-Bit Mapping Table</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's2a', 'hex-conversions')">Hex &lt;--&gt; Binary Conversions</button>
+            </div>
+        </div>
+
+        <div id="hex-intro" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Base 16 (Hexadecimal) Fundamentals</h3>
+                    <ul>
+                        <li>Uses 16 digits: <strong>0–9</strong> and <strong>A–F</strong>.</li>
+                        <li><strong>A₁₆</strong> = 10₁₀ | <strong>B₁₆</strong> = 11₁₀ | <strong>C₁₆</strong> = 12₁₀</li>
+                        <li><strong>D₁₆</strong> = 13₁₀ | <strong>E₁₆</strong> = 14₁₀ | <strong>F₁₆</strong> = 15₁₀</li>
+                        <li><strong>Purpose:</strong> Succinctly represents computer memory contents (e.g., F₁₆ represents four binary ones: 1111₂).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="hex-bin-table" class="subtopic-content">
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hex Digit</th>
+                            <th>Decimal Equivalent</th>
+                            <th>4-Bit Binary Pattern</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0</td><td>0</td><td>0000</td></tr>
+                        <tr><td>1</td><td>1</td><td>0001</td></tr>
+                        <tr><td>2</td><td>2</td><td>0010</td></tr>
+                        <tr><td>3</td><td>3</td><td>0011</td></tr>
+                        <tr><td>4</td><td>4</td><td>0100</td></tr>
+                        <tr><td>5</td><td>5</td><td>0101</td></tr>
+                        <tr><td>6</td><td>6</td><td>0110</td></tr>
+                        <tr><td>7</td><td>7</td><td>0111</td></tr>
+                        <tr><td>8</td><td>8</td><td>1000</td></tr>
+                        <tr><td>9</td><td>9</td><td>1001</td></tr>
+                        <tr><td>A</td><td>10</td><td>1010</td></tr>
+                        <tr><td>B</td><td>11</td><td>1011</td></tr>
+                        <tr><td>C</td><td>12</td><td>1100</td></tr>
+                        <tr><td>D</td><td>13</td><td>1101</td></tr>
+                        <tr><td>E</td><td>14</td><td>1110</td></tr>
+                        <tr><td>F</td><td>15</td><td>1111</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="hex-conversions" class="subtopic-content">
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">Convert Hex to Binary (e.g., ACE₁₆ & 3AF₁₆)</button>
+                <div class="accordion-body">
+                    <p><strong>Rule:</strong> Replace each Hex digit with its 4-bit binary group.</p>
+                    <div class="code-box">
+                        <pre>ACE₁₆ to Binary:
+A -> 1010
+C -> 1100
+E -> 1110
+Result = 101011001110₂
+
+3AF₁₆ to Binary:
+3 -> 0011 (Drop leading zeros -> 11)
+A -> 1010
+F -> 1111
+Result = 1110101111₂</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">Convert Binary to Hex (e.g., 11111011011₂)</button>
+                <div class="accordion-body">
+                    <p><strong>Rule:</strong> Group bits into sets of 4 from right to left (pad leading zeros on the left if necessary).</p>
+                    <div class="code-box">
+                        <pre>Convert 11111011011₂ to Hex:
+
+1. Group in 4s from right: 111 | 1101 | 1011
+2. Pad leading 0s on left group: 0111 | 1101 | 1011
+3. Convert each group:
+   0111₂ = 7₁₆
+   1101₂ = D₁₆
+   1011₂ = B₁₆
+Result = 7DB₁₆</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 2 Part A Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc2a')">
+                <div id="fc2a" class="flashcard">
+                    <div class="card-face card-front">What are the decimal values of Hex digits A, C, and F?</div>
+                    <div class="card-face card-back">A = 10\nC = 12\nF = 15</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s2a')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s2a')">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SESSION 2 PART B ================= -->
+    <section id="s2b" class="session-view">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's2b', 'propositions')">Propositions</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'logic-ops-1')">Operators: NOT, AND, OR</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'logic-ops-2')">Operators: XOR, Implication, Equivalence</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'truth-summary')">Master Truth Table</button>
+            </div>
+        </div>
+
+        <div id="propositions" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Propositions & Boolean Variables</h3>
+                    <ul>
+                        <li><strong>Proposition:</strong> A declarative statement that is strictly <strong>True (T / 1)</strong> or <strong>False (F / 0)</strong>.</li>
+                        <li><strong>Examples:</strong> "Paris is the capital of France" (True), "2 + 2 = 5" (False).</li>
+                        <li><strong>Not Propositions:</strong> Questions ("Is it raining?"), Commands ("Go away!"), or self-referential paradoxes.</li>
+                        <li><strong>Boolean Variable:</strong> A letter representing a proposition (e.g., <code>p = 'I am in my room'</code>).</li>
+                        <li><strong>Atomic vs Compound:</strong> Atomic propositions are single variables; compound propositions join atomic ones using logic operators.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="logic-ops-1" class="subtopic-content">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Negation (NOT: ¬, ~)</h3>
+                    <p>Flips the truth value.</p>
+                    <ul>
+                        <li>If <code>p = T</code>, then <code>¬p = F</code></li>
+                        <li>If <code>p = F</code>, then <code>¬p = T</code></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Conjunction (AND: ∧)</h3>
+                    <p>True <strong>only if both</strong> operands are True.</p>
+                    <ul>
+                        <li>T ∧ T = <strong>T</strong></li>
+                        <li>T ∧ F = <strong>F</strong>, F ∧ T = <strong>F</strong>, F ∧ F = <strong>F</strong></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Disjunction (OR: ∨)</h3>
+                    <p>True if <strong>at least one</strong> operand is True.</p>
+                    <ul>
+                        <li>F ∨ F = <strong>F</strong></li>
+                        <li>T ∨ T = <strong>T</strong>, T ∨ F = <strong>T</strong>, F ∨ T = <strong>T</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="logic-ops-2" class="subtopic-content">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Exclusive OR (XOR: ⊕)</h3>
+                    <p>True if operands are <strong>different</strong> (one True, one False).</p>
+                    <ul>
+                        <li>T ⊕ F = <strong>T</strong>, F ⊕ T = <strong>T</strong></li>
+                        <li>T ⊕ T = <strong>F</strong>, F ⊕ F = <strong>F</strong></li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Conditional / Implication (→)</h3>
+                    <p><code>p → q</code> ("If p, then q"). False <strong>only if p is True and q is False</strong>.</p>
+                    <ul>
+                        <li>T → F = <strong>F</strong></li>
+                        <li>T → T = <strong>T</strong>, F → T = <strong>T</strong>, F → F = <strong>T</strong></li>
+                        <li><em>Memory aid:</em> "If you are late (T) and NOT fired (F), the promise was broken (F)".</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Bi-conditional / Equivalence (↔)</h3>
+                    <p><code>p ↔ q</code> ("p if and only if q"). True <strong>only when both have the same truth value</strong>.</p>
+                    <ul>
+                        <li>T ↔ T = <strong>T</strong>, F ↔ F = <strong>T</strong></li>
+                        <li>T ↔ F = <strong>F</strong>, F ↔ T = <strong>F</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="truth-summary" class="subtopic-content">
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>p</th>
+                            <th>q</th>
+                            <th>¬p</th>
+                            <th>p ∧ q (AND)</th>
+                            <th>p ∨ q (OR)</th>
+                            <th>p ⊕ q (XOR)</th>
+                            <th>p → q (IF-THEN)</th>
+                            <th>p ↔ q (IFF)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
+                        <tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+                        <tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
+                        <tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 2 Part B Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc2b')">
+                <div id="fc2b" class="flashcard">
+                    <div class="card-face card-front">When is the Conditional statement (p → q) FALSE?</div>
+                    <div class="card-face card-back">ONLY when p is True and q is False (T → F = F).</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s2b')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s2b')">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Session Switching
+        function switchSession(btn, sessionId) {
+            document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.session-view').forEach(v => v.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(sessionId).classList.add('active');
+        }
+
+        // Sub-Tab Switching
+        function switchSubTab(btn, sessionId, subtopicId) {
+            const session = document.getElementById(sessionId);
+            session.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+            session.querySelectorAll('.subtopic-content').forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(subtopicId).classList.add('active');
+        }
+
+        // Accordion Toggle
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            item.classList.toggle('active');
+        }
+
+        // Flashcards Data Store
+        const cardsData = {
+            s1a: [
+                { q: "What is the operator order of precedence?", a: "1. Parentheses ()\n2. Exponents\n3. Multiplication & Division\n4. Addition & Subtraction\n5. Equality (=)" },
+                { q: "How do you evaluate nested parentheses?", a: "Find the first right ')' from left to right, match with closest left '(', and solve the inside first." },
+                { q: "What is x⁰ for any non-zero x?", a: "1" }
+            ],
+            s1b: [
+                { q: "Convert Decimal 13 to Binary.", a: "13₁₀ = 1101₂" },
+                { q: "What do MSB and LSB stand for?", a: "MSB = Most Significant Bit (leftmost)\nLSB = Least Significant Bit (rightmost)" },
+                { q: "Convert Binary 101₂ to Decimal.", a: "(1×2²) + (0×2¹) + (1×2⁰) = 4 + 0 + 1 = 5₁₀" }
+            ],
+            s2a: [
+                { q: "What are the decimal values of Hex digits A, C, and F?", a: "A = 10\nC = 12\nF = 15" },
+                { q: "Convert Hex 3A₁₆ to Binary.", a: "3 = 0011 (or 11)\nA = 1010\nResult: 111010₂" },
+                { q: "How many binary bits correspond to one Hex digit?", a: "Exactly 4 binary bits." }
+            ],
+            s2b: [
+                { q: "When is the Conditional statement (p → q) FALSE?", a: "ONLY when p is True and q is False (T → F = F)." },
+                { q: "What makes an XOR (p ⊕ q) statement TRUE?", a: "When p and q have DIFFERENT truth values (one True, one False)." },
+                { q: "Is 'Go home!' a proposition?", a: "No, commands and questions are NOT propositions because they lack a truth value." }
+            ]
+        };
+
+        const indices = { s1a: 0, s1b: 0, s2a: 0, s2b: 0 };
+        const cardIds = { s1a: 'fc1a', s1b: 'fc1b', s2a: 'fc2a', s2b: 'fc2b' };
+
+        function flipCard(cardId) {
+            document.getElementById(cardId).classList.toggle('flipped');
+        }
+
+        function nextCard(sessionKey) {
+            indices[sessionKey] = (indices[sessionKey] + 1) % cardsData[sessionKey].length;
+            updateCard(cardIds[sessionKey], cardsData[sessionKey][indices[sessionKey]]);
+        }
+
+        function prevCard(sessionKey) {
+            indices[sessionKey] = (indices[sessionKey] - 1 + cardsData[sessionKey].length) % cardsData[sessionKey].length;
+            updateCard(cardIds[sessionKey], cardsData[sessionKey][indices[sessionKey]]);
+        }
+
+        function updateCard(cardId, data) {
+            const card = document.getElementById(cardId);
+            card.classList.remove('flipped');
+            setTimeout(() => {
+                card.querySelector('.card-front').innerText = data.q;
+                card.querySelector('.card-back').innerText = data.a;
+            }, 200);
+        }
+    </script>
+</body>
+</html>
