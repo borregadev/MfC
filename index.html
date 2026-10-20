@@ -218,7 +218,7 @@
         }
 
         .accordion-item.active .accordion-body {
-            max-height: 600px;
+            max-height: 700px;
             padding: 0 18px 18px 18px;
         }
 
@@ -380,7 +380,7 @@
 
     <header>
         <h1>Mathematics for Computing</h1>
-        <p class="subtitle">Sessions 1 & 2 Comprehensive Interactive Study Guide</p>
+        <p class="subtitle">Sessions 1–3 Comprehensive Interactive Study Guide</p>
     </header>
 
     <!-- Top Level Session Switcher -->
@@ -389,6 +389,8 @@
         <button class="session-btn" onclick="switchSession(this, 's1b')">S1: Binary Numbers</button>
         <button class="session-btn" onclick="switchSession(this, 's2a')">S2: Hexadecimal Base</button>
         <button class="session-btn" onclick="switchSession(this, 's2b')">S2: Boolean Logic</button>
+        <button class="session-btn" onclick="switchSession(this, 's3a')">S3: Compound Evaluation</button>
+        <button class="session-btn" onclick="switchSession(this, 's3b')">S3: Truth Table Construction</button>
     </nav>
 
     <!-- ================= SESSION 1 PART A ================= -->
@@ -425,23 +427,39 @@
 
         <div id="precedence" class="subtopic-content">
             <div class="svg-container">
-                <svg viewBox="0 0 500 80" width="100%" height="80">
+                <svg viewBox="0 0 620 90" width="100%" height="90">
                     <defs>
                         <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
                         </marker>
                     </defs>
-                    <rect x="10" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="55" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">() Parentheses</text>
-                    <line x1="100" y1="40" x2="130" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-                    <rect x="130" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="175" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">xᵃ Exponents</text>
-                    <line x1="220" y1="40" x2="250" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-                    <rect x="250" y="20" width="90" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="295" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">× / ÷</text>
-                    <line x1="340" y1="40" x2="370" y2="40" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-                    <rect x="370" y="20" width="120" height="40" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="430" y="45" fill="#f8fafc" text-anchor="middle" font-weight="bold">+ / − then =</text>
+                    <rect x="10" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="57" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 1</text>
+                    <text x="57" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">( ) Parentheses</text>
+                    
+                    <line x1="105" y1="45" x2="130" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+                    
+                    <rect x="130" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="177" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 2</text>
+                    <text x="177" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">xⁿ Exponents</text>
+                    
+                    <line x1="225" y1="45" x2="250" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <rect x="250" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="297" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 3</text>
+                    <text x="297" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">× , /</text>
+                    
+                    <line x1="345" y1="45" x2="370" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <rect x="370" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="417" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 4</text>
+                    <text x="417" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">+ , −</text>
+                    
+                    <line x1="465" y1="45" x2="490" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+                    <rect x="490" y="20" width="115" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+                    <text x="547" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 5</text>
+                    <text x="547" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">= Equality</text>
                 </svg>
             </div>
             <div class="table-box">
@@ -818,6 +836,202 @@ Result = 7DB₁₆</pre>
         </div>
     </section>
 
+    <!-- ================= SESSION 3 PART A ================= -->
+    <section id="s3a" class="session-view">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's3a', 'bool-precedence')">Boolean Precedence Rules</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's3a', 'eval-examples')">Step-by-Step Evaluations</button>
+            </div>
+        </div>
+
+        <div id="bool-precedence" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Boolean Operators Order of Precedence</h3>
+                    <ul>
+                        <li><strong>1. Parentheses ( ):</strong> Highest precedence.</li>
+                        <li><strong>2. Negation (~ / ¬):</strong> Evaluated next.</li>
+                        <li><strong>3. Conjunction (∧):</strong> Logical AND.</li>
+                        <li><strong>4. Disjunction (∨):</strong> Logical OR.</li>
+                        <li><strong>5. Equal Precedence (⊕, →, ↔):</strong> XOR, Conditional, Bi-conditional.</li>
+                        <li><strong>Direction Rule:</strong> When operators have equal precedence, evaluate from <strong>RIGHT to LEFT</strong> (opposite to arithmetic math!).</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Precedence Level</th>
+                            <th>Operator Symbol</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1 (Highest)</td><td><code>( )</code></td><td>Parentheses</td></tr>
+                        <tr><td>2</td><td><code>~</code> / <code>¬</code></td><td>Negation (NOT)</td></tr>
+                        <tr><td>3</td><td><code>∧</code></td><td>Conjunction (AND)</td></tr>
+                        <tr><td>4</td><td><code>∨</code></td><td>Disjunction (OR)</td></tr>
+                        <tr><td>5 (Lowest)</td><td><code>⊕ , → , ↔</code></td><td>XOR, Conditional, Bi-conditional</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="eval-examples" class="subtopic-content">
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">Example 1: Evaluate T ∧ T → F</button>
+                <div class="accordion-body">
+                    <div class="code-box">
+                        <pre>Evaluate: T ∧ T → F
+
+1. AND (∧) has higher precedence than Conditional (→).
+2. Compute (T ∧ T) = T.
+3. Expression becomes: T → F
+4. Compute T → F = F.
+Result = F</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">Example 2: Evaluate ~((T ∧ F) → ~T) ∨ F</button>
+                <div class="accordion-body">
+                    <div class="code-box">
+                        <pre>Evaluate: ~((T ∧ F) → ~T) ∨ F
+
+Step 1: Inner parentheses (T ∧ F) = F => ~((F) → ~T) ∨ F
+Step 2: Negation inside parenthesis (~T = F) => ~(F → F) ∨ F
+Step 3: Conditional (F → F = T) => ~(T) ∨ F
+Step 4: Negation ~(T) = F => F ∨ F
+Step 5: Disjunction F ∨ F = F
+Result = F</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" onclick="toggleAccordion(this)">Example 3: Evaluate (T ⊕ ((T → F) ∨ ~F)) ↔ T</button>
+                <div class="accordion-body">
+                    <div class="code-box">
+                        <pre>Evaluate: (T ⊕ ((T → F) ∨ ~F)) ↔ T
+
+1. Inner conditional (T → F = F) and negation (~F = T) => (T ⊕ (F ∨ T)) ↔ T
+2. Inner disjunction (F ∨ T = T) => (T ⊕ T) ↔ T
+3. Inner XOR (T ⊕ T = F) => F ↔ T
+4. Final Bi-conditional (F ↔ T = F) => F</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 3 Part A Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc3a')">
+                <div id="fc3a" class="flashcard">
+                    <div class="card-face card-front">In Boolean expressions without parentheses, what direction are equal-precedence operators evaluated?</div>
+                    <div class="card-face card-back">From RIGHT to LEFT (opposite to normal arithmetic).</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s3a')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s3a')">Next</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SESSION 3 PART B ================= -->
+    <section id="s3b" class="session-view">
+        <div class="subtab-wrapper">
+            <div class="subtab-bar">
+                <button class="subtab-btn active" onclick="switchSubTab(this, 's3b', 'column-method')">Column-Based Table Method</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's3b', 'table-2var')">2-Variable Construction Example</button>
+                <button class="subtab-btn" onclick="switchSubTab(this, 's3b', 'table-3var')">3-Variable Base Setup (8 Rows)</button>
+            </div>
+        </div>
+
+        <div id="column-method" class="subtopic-content active">
+            <div class="grid-layout">
+                <div class="card">
+                    <h3>Methodology for Building Truth Tables</h3>
+                    <ul>
+                        <li>Assign initial columns (1, 2, 3...) to atomic Boolean variables in alphabetical order.</li>
+                        <li>Replace variables in the proposition with their column numbers (e.g., <code>r ∧ ~s</code> becomes <code>1 ∧ ~2</code>).</li>
+                        <li>Evaluate operations step-by-step following precedence, placing intermediate sub-expressions in new columns.</li>
+                        <li>Once finished, remove intermediate reference columns to leave the final polished truth table.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="table-2var" class="subtopic-content">
+            <p style="color: var(--text-muted); margin-bottom: 12px;">Step-by-step construction of truth table for <code>r ∧ ~s</code>:</p>
+            
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Col 1 (r)</th>
+                            <th>Col 2 (s)</th>
+                            <th>Col 3 (~2)</th>
+                            <th>Col 4 (1 ∧ 3) [r ∧ ~s]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>T</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
+                        <tr><td>T</td><td>F</td><td>T</td><td><strong>T</strong></td></tr>
+                        <tr><td>F</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
+                        <tr><td>F</td><td>F</td><td>T</td><td><strong>F</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="table-3var" class="subtopic-content">
+            <p style="color: var(--text-muted); margin-bottom: 12px;">Standard 8-row initialization for 3 variables (p, r, s) and final evaluation of <code>s ∧ p ∨ r</code>:</p>
+            
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Col 1 (p)</th>
+                            <th>Col 2 (r)</th>
+                            <th>Col 3 (s)</th>
+                            <th>Col 4 (3 ∧ 1)</th>
+                            <th>Col 5 (4 ∨ 2) [s ∧ p ∨ r]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>T</td><td>T</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
+                        <tr><td>T</td><td>T</td><td>F</td><td>F</td><td><strong>T</strong></td></tr>
+                        <tr><td>T</td><td>F</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
+                        <tr><td>T</td><td>F</td><td>F</td><td>F</td><td><strong>F</strong></td></tr>
+                        <tr><td>F</td><td>T</td><td>T</td><td>F</td><td><strong>T</strong></td></tr>
+                        <tr><td>F</td><td>T</td><td>F</td><td>F</td><td><strong>T</strong></td></tr>
+                        <tr><td>F</td><td>F</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
+                        <tr><td>F</td><td>F</td><td>F</td><td>F</td><td><strong>F</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flashcard-section">
+            <h3>Session 3 Part B Flashcards</h3>
+            <div class="flashcard-container" onclick="flipCard('fc3b')">
+                <div id="fc3b" class="flashcard">
+                    <div class="card-face card-front">How many truth rows are required for a compound proposition with 3 Boolean variables?</div>
+                    <div class="card-face card-back">8 rows (2³ = 8).</div>
+                </div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="fc-btn" onclick="prevCard('s3b')">Previous</button>
+                <button class="fc-btn" onclick="nextCard('s3b')">Next</button>
+            </div>
+        </div>
+    </section>
+
     <script>
         // Session Switching
         function switchSession(btn, sessionId) {
@@ -865,11 +1079,20 @@ Result = 7DB₁₆</pre>
                 { q: "When is the Conditional statement (p → q) FALSE?", a: "ONLY when p is True and q is False (T → F = F)." },
                 { q: "What makes an XOR (p ⊕ q) statement TRUE?", a: "When p and q have DIFFERENT truth values (one True, one False)." },
                 { q: "Is 'Go home!' a proposition?", a: "No, commands and questions are NOT propositions because they lack a truth value." }
+            ],
+            s3a: [
+                { q: "In Boolean expressions without parentheses, what direction are equal-precedence operators evaluated?", a: "From RIGHT to LEFT (opposite to normal arithmetic)." },
+                { q: "Evaluate T ∧ T → F.", a: "(T ∧ T) = T, then T → F = F. Final result: F." },
+                { q: "What is the precedence rank of Negation (~)?", a: "Rank 2 (Directly under parentheses)." }
+            ],
+            s3b: [
+                { q: "How many truth rows are required for a compound proposition with 3 Boolean variables?", a: "8 rows (2³ = 8)." },
+                { q: "In the column-based truth table method, what do numbers like '1 ∧ 3' represent?", a: "Evaluating the logical operation between the values calculated in Column 1 and Column 3." }
             ]
         };
 
-        const indices = { s1a: 0, s1b: 0, s2a: 0, s2b: 0 };
-        const cardIds = { s1a: 'fc1a', s1b: 'fc1b', s2a: 'fc2a', s2b: 'fc2b' };
+        const indices = { s1a: 0, s1b: 0, s2a: 0, s2b: 0, s3a: 0, s3b: 0 };
+        const cardIds = { s1a: 'fc1a', s1b: 'fc1b', s2a: 'fc2a', s2b: 'fc2b', s3a: 'fc3a', s3b: 'fc3b' };
 
         function flipCard(cardId) {
             document.getElementById(cardId).classList.toggle('flipped');
