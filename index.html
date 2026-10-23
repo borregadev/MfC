@@ -1,1120 +1,1018 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mathematics for Computing</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                        },
+                        cyanAccent: {
+                            400: '#22d3ee',
+                            500: '#06b6d4',
+                        },
+                        pinkAccent: {
+                            400: '#f472b6',
+                            500: '#ec4899',
+                        },
+                        darkbg: '#070b12',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-main: #0f172a;
-            --card-bg: #1e293b;
-            --accent-blue: #38bdf8;
-            --text-muted: #94a3b8;
-            --text-main: #f8fafc;
-            --border-color: #334155;
-            --hover-bg: #0284c7;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding: 16px;
-            max-width: 1200px;
-            margin: 0 auto;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #070b12;
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 20%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.08) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #f8fafc;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-color);
+        .glass-card {
+            background: rgba(18, 24, 38, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        h1 {
-            color: var(--accent-blue);
-            font-size: 1.8rem;
-            margin-bottom: 6px;
+        .glass-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        p.subtitle {
-            color: var(--text-muted);
-            font-size: 0.95rem;
+        .glass-card-hover:hover {
+            border-color: rgba(129, 140, 248, 0.3);
+            box-shadow: 0 12px 40px -10px rgba(99, 102, 241, 0.25);
+            transform: translateY(-2px);
         }
 
-        /* Top Level Session Switcher */
-        .session-nav {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .glow-brand {
+            box-shadow: 0 0 20px -3px rgba(99, 102, 241, 0.4);
         }
 
-        .session-btn {
-            flex: 1;
-            min-width: 140px;
-            padding: 12px 14px;
-            background-color: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s ease;
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-
-        .session-btn:active {
-            transform: scale(0.98);
-        }
-
-        .session-btn.active {
-            background-color: var(--accent-blue);
-            color: var(--bg-main);
-            border-color: var(--accent-blue);
-        }
-
-        /* Sub-Tab Bar (Horizontally Scrollable) */
-        .subtab-wrapper {
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-bottom: 20px;
-            scrollbar-width: none;
+        .no-scrollbar {
             -ms-overflow-style: none;
-        }
-
-        .subtab-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-
-        .subtab-bar {
-            display: inline-flex;
-            gap: 8px;
-        }
-
-        .subtab-btn {
-            padding: 10px 16px;
-            background-color: var(--card-bg);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-
-        .subtab-btn:active {
-            opacity: 0.8;
-        }
-
-        .subtab-btn.active {
-            color: var(--text-main);
-            border-color: var(--accent-blue);
-            background-color: rgba(56, 189, 248, 0.15);
-        }
-
-        /* Views Layout */
-        .session-view {
-            display: none;
-        }
-
-        .session-view.active {
-            display: block;
-        }
-
-        .subtopic-content {
-            display: none;
-        }
-
-        .subtopic-content.active {
-            display: block;
-        }
-
-        /* Responsive Grids */
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 18px;
-        }
-
-        .card h3 {
-            color: var(--accent-blue);
-            margin-bottom: 12px;
-            font-size: 1.1rem;
-        }
-
-        ul {
-            list-style-type: square;
-            padding-left: 20px;
-            color: var(--text-muted);
-        }
-
-        ul li {
-            margin-bottom: 8px;
-        }
-
-        ul li strong {
-            color: var(--text-main);
-        }
-
-        /* Interactive Accordion */
-        .accordion-item {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 12px;
-            overflow: hidden;
-        }
-
-        .accordion-header {
-            width: 100%;
-            padding: 14px 18px;
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-weight: 600;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .accordion-header:active {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .accordion-header::after {
-            content: '+';
-            color: var(--accent-blue);
-            font-size: 1.2rem;
-        }
-
-        .accordion-item.active .accordion-header::after {
-            content: '−';
-        }
-
-        .accordion-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out, padding 0.3s ease;
-            padding: 0 18px;
-            color: var(--text-muted);
-        }
-
-        .accordion-item.active .accordion-body {
-            max-height: 700px;
-            padding: 0 18px 18px 18px;
-        }
-
-        /* Visual SVG Section */
-        .svg-container {
-            width: 100%;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Code and Table Formatting */
-        .table-box, .code-box {
-            width: 100%;
-            overflow-x: auto;
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            min-width: 480px;
-        }
-
-        th, td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            background-color: rgba(56, 189, 248, 0.1);
-            color: var(--accent-blue);
-        }
-
-        td {
-            color: var(--text-muted);
-        }
-
-        code {
-            font-family: monospace;
-            color: var(--accent-blue);
-            background-color: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        pre {
-            padding: 16px;
-            color: var(--text-main);
-            font-family: monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        /* Flashcards Section */
-        .flashcard-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .flashcard-container {
-            perspective: 1000px;
-            width: 100%;
-            max-width: 480px;
-            height: 220px;
-            margin: 16px auto;
-            cursor: pointer;
-        }
-
-        .flashcard {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-            border-radius: 8px;
-        }
-
-        .flashcard.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--accent-blue);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            white-space: pre-line;
-        }
-
-        .card-front {
-            background-color: #1a2436;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .card-back {
-            background-color: #0c1524;
-            color: var(--accent-blue);
-            transform: rotateY(180deg);
-        }
-
-        .flashcard-controls {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .fc-btn {
-            padding: 10px 20px;
-            background-color: var(--accent-blue);
-            color: var(--bg-main);
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .fc-btn:active {
-            opacity: 0.8;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
-            .session-btn {
-                padding: 10px;
-                font-size: 0.85rem;
-            }
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-    <header>
-        <h1>Mathematics for Computing</h1>
-        <p class="subtitle">Sessions 1–3 Comprehensive Interactive Study Guide</p>
+    <!-- Header -->
+    <header class="border-b border-white/10 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="p-2.5 bg-gradient-to-tr from-brand-600 to-cyanAccent-500 text-white rounded-xl shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-calculator text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">Mathematics for Computing</h1>
+                    <p class="text-xs text-brand-400 font-medium">Interactive Course Summary & Study Hub</p>
+                </div>
+            </div>
+
+            <!-- Main Session Switcher -->
+            <div class="flex items-center bg-slate-900/90 p-1.5 rounded-xl border border-white/10 gap-1.5 shadow-inner">
+                <button onclick="switchSession('session-1')" id="session-1-btn" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand">
+                    <i class="fa-solid fa-layer-group"></i> Session 1
+                </button>
+                <button onclick="switchSession('session-2')" id="session-2-btn" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i class="fa-solid fa-diagram-project"></i> Session 2
+                </button>
+                <button onclick="switchSession('session-3')" id="session-3-btn" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50">
+                    <i class="fa-solid fa-brain"></i> Session 3
+                </button>
+            </div>
+        </div>
     </header>
 
-    <!-- Top Level Session Switcher -->
-    <nav class="session-nav">
-        <button class="session-btn active" onclick="switchSession(this, 's1a')">S1: Framework & Expressions</button>
-        <button class="session-btn" onclick="switchSession(this, 's1b')">S1: Binary Numbers</button>
-        <button class="session-btn" onclick="switchSession(this, 's2a')">S2: Hexadecimal Base</button>
-        <button class="session-btn" onclick="switchSession(this, 's2b')">S2: Boolean Logic</button>
-        <button class="session-btn" onclick="switchSession(this, 's3a')">S3: Compound Evaluation</button>
-        <button class="session-btn" onclick="switchSession(this, 's3b')">S3: Truth Table Construction</button>
+    <!-- Sub-Navigation Bar for Session 1 -->
+    <nav id="session-1-nav" class="session-nav bg-slate-950/80 border-b border-white/10 sticky top-[73px] z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-2 overflow-x-auto no-scrollbar py-2.5">
+                <button onclick="switchTab('s1-part-a')" id="btn-s1-part-a" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand">
+                    <i class="fa-solid fa-graduation-cap"></i> Part A: Framework
+                </button>
+                <button onclick="switchTab('s1-part-b')" id="btn-s1-part-b" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-hashtag"></i> Part B: Numbers & Expressions
+                </button>
+                <button onclick="switchTab('s1-part-c')" id="btn-s1-part-c" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-arrow-down-short-wide"></i> Part C: Precedence
+                </button>
+                <button onclick="switchTab('s1-part-d')" id="btn-s1-part-d" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-code"></i> Part D: Parentheses
+                </button>
+                <button onclick="switchTab('s1-part-e')" id="btn-s1-part-e" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-superscript"></i> Part E: Exponents
+                </button>
+                <button onclick="switchTab('s1-part-f')" id="btn-s1-part-f" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-microchip"></i> Part F: Binary System
+                </button>
+                <button onclick="switchTab('s1-part-g')" id="btn-s1-part-g" class="s1-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-table-cells"></i> Part G: Decimal to Binary
+                </button>
+            </div>
+        </div>
     </nav>
 
-    <!-- ================= SESSION 1 PART A ================= -->
-    <section id="s1a" class="session-view active">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's1a', 'module-info')">Module Framework</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'precedence')">Order of Precedence</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'parentheses')">Parentheses Rules</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's1a', 'exponents')">Exponents / Indices</button>
+    <!-- Sub-Navigation Bar for Session 2 -->
+    <nav id="session-2-nav" class="session-nav hidden bg-slate-950/80 border-b border-white/10 sticky top-[73px] z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-2 overflow-x-auto no-scrollbar py-2.5">
+                <button onclick="switchTab('s2-part-a')" id="btn-s2-part-a" class="s2-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand">
+                    <i class="fa-solid fa-cube"></i> Part A: Hexadecimal Base
+                </button>
+                <button onclick="switchTab('s2-part-b')" id="btn-s2-part-b" class="s2-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-toggle-on"></i> Part B: Boolean Propositions
+                </button>
+                <button onclick="switchTab('s2-part-c')" id="btn-s2-part-c" class="s2-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-diagram-next"></i> Part C: Compound Propositions
+                </button>
+                <button onclick="switchTab('s2-part-d')" id="btn-s2-part-d" class="s2-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-filter"></i> Part D: Operators 1 (AND, OR, NOT)
+                </button>
+                <button onclick="switchTab('s2-part-e')" id="btn-s2-part-e" class="s2-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-code-branch"></i> Part E: Operators 2 (XOR, Implies, IFF)
+                </button>
             </div>
         </div>
+    </nav>
 
-        <div id="module-info" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Course Structure</h3>
-                    <ul>
-                        <li><strong>Weekly Sessions:</strong> 3-hour weekly block (1.5h lecture + 1.5h practice class).</li>
-                        <li><strong>Practice Classes:</strong> Split into 3 groups to solve online quizzes; critical for passing.</li>
-                        <li><strong>Required Materials:</strong> Writing pad, colored pens, ruler, slide access.</li>
-                    </ul>
+    <!-- Sub-Navigation Bar for Session 3 -->
+    <nav id="session-3-nav" class="session-nav hidden bg-slate-950/80 border-b border-white/10 sticky top-[73px] z-40 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-2 overflow-x-auto no-scrollbar py-2.5">
+                <button onclick="switchTab('s3-part-a')" id="btn-s3-part-a" class="s3-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand">
+                    <i class="fa-solid fa-check-double"></i> Part A: Evaluating Compound Propositions
+                </button>
+                <button onclick="switchTab('s3-part-b')" id="btn-s3-part-b" class="s3-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-network-wired"></i> Part B: Complex Propositions & Precedence
+                </button>
+                <button onclick="switchTab('s3-part-c')" id="btn-s3-part-c" class="s3-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50">
+                    <i class="fa-solid fa-table"></i> Part C: Column-Indexed Truth Tables
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- SESSION 1 CONTENT CONTAINER -->
+        <div id="session-1-content" class="session-container space-y-6">
+
+            <!-- S1 PART A -->
+            <section id="s1-part-a" class="tab-content space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-graduation-cap"></i></span>
+                        Session 1 Part A: Module Framework
+                    </h2>
+                    <p class="text-slate-300 text-sm">Course administration, assessment schedules, weekly structure, and prerequisites.</p>
                 </div>
-                <div class="card">
-                    <h3>Assessments</h3>
-                    <ul>
-                        <li><strong>Quiz 1 (25%):</strong> Due Week 5 on Moodle.</li>
-                        <li><strong>Quiz 2 (75%):</strong> Due Week 11 on Moodle.</li>
-                        <li><strong>Policy:</strong> 100% of final grade is based on these two quizzes. Deadlines are non-negotiable.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        <div id="precedence" class="subtopic-content">
-            <div class="svg-container">
-                <svg viewBox="0 0 620 90" width="100%" height="90">
-                    <defs>
-                        <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#38bdf8"/>
-                        </marker>
-                    </defs>
-                    <rect x="10" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="57" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 1</text>
-                    <text x="57" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">( ) Parentheses</text>
-                    
-                    <line x1="105" y1="45" x2="130" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-                    
-                    <rect x="130" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="177" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 2</text>
-                    <text x="177" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">xⁿ Exponents</text>
-                    
-                    <line x1="225" y1="45" x2="250" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-cyanAccent-400"></i> Weekly Session Structure
+                        </h3>
+                        <ul class="space-y-3 text-slate-300 text-sm">
+                            <li class="flex items-start gap-3">
+                                <span class="p-1 bg-emerald-500/20 text-emerald-400 rounded-md mt-0.5"><i class="fa-solid fa-check text-xs"></i></span>
+                                <div><strong class="text-white">Duration:</strong> 3-hour weekly sessions</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="p-1 bg-emerald-500/20 text-emerald-400 rounded-md mt-0.5"><i class="fa-solid fa-check text-xs"></i></span>
+                                <div><strong class="text-white">1.5 Hours Presentation:</strong> Lecture with a mid-session break.</div>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="p-1 bg-emerald-500/20 text-emerald-400 rounded-md mt-0.5"><i class="fa-solid fa-check text-xs"></i></span>
+                                <div><strong class="text-white">1.5 Hours Practice:</strong> Non-graded Moodle practice quizzes & group working.</div>
+                            </li>
+                        </ul>
+                    </div>
 
-                    <rect x="250" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="297" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 3</text>
-                    <text x="297" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">× , /</text>
-                    
-                    <line x1="345" y1="45" x2="370" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-
-                    <rect x="370" y="20" width="95" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="417" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 4</text>
-                    <text x="417" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">+ , −</text>
-                    
-                    <line x1="465" y1="45" x2="490" y2="45" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
-
-                    <rect x="490" y="20" width="115" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-                    <text x="547" y="42" fill="#38bdf8" text-anchor="middle" font-size="11" font-weight="bold">Level 5</text>
-                    <text x="547" y="58" fill="#f8fafc" text-anchor="middle" font-size="12" font-weight="bold">= Equality</text>
-                </svg>
-            </div>
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Operator Symbol</th>
-                            <th>Operation</th>
-                            <th>Precedence Level</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td><code>( )</code></td><td>Parentheses</td><td>1 (Highest)</td></tr>
-                        <tr><td><code>xⁿ</code></td><td>Exponents / Indices</td><td>2</td></tr>
-                        <tr><td><code>× , /</code></td><td>Multiplication & Division</td><td>3</td></tr>
-                        <tr><td><code>+ , -</code></td><td>Addition & Subtraction</td><td>4</td></tr>
-                        <tr><td><code>=</code></td><td>Equality Sign</td><td>5 (Lowest)</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="parentheses" class="subtopic-content">
-            <div class="card">
-                <h3>Nested Parentheses Rule</h3>
-                <ul>
-                    <li>Scan left-to-right for the <strong>first right parenthesis ')'</strong>.</li>
-                    <li>Locate the <strong>closest left parenthesis '('</strong> directly to its left.</li>
-                    <li>Evaluate the inner math expression first.</li>
-                </ul>
-            </div>
-            <div class="code-box">
-                <pre>Evaluating: ((6 + (5 + 3) × 12) / (3 + 5))
-
-Step 1: Inner (5 + 3) = 8 => ((6 + 8 × 12) / (3 + 5))
-Step 2: Inner (6 + 8 × 12) => 8 × 12 = 96, 6 + 96 = 102 => (102 / (3 + 5))
-Step 3: Inner (3 + 5) = 8 => 102 / 8
-Step 4: Final calculation = 12.75</pre>
-            </div>
-        </div>
-
-        <div id="exponents" class="subtopic-content">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Exponent Rules</h3>
-                    <ul>
-                        <li><strong>Base-Index Form:</strong> <code>Base<sup>Index</sup></code>.</li>
-                        <li><strong>Zero Power Rule:</strong> Any non-zero number to power 0 equals <strong>1</strong> (e.g., 5<sup>0</sup> = 1).</li>
-                        <li><strong>Base 10 Powers:</strong> 10<sup>n</sup> equals 1 with <strong>n zeros</strong> (e.g., 10<sup>5</sup> = 100,000).</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="flashcard-section">
-            <h3>Session 1 Part A Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc1a')">
-                <div id="fc1a" class="flashcard">
-                    <div class="card-face card-front">What is the operator order of precedence?</div>
-                    <div class="card-face card-back">1. Parentheses ()\n2. Exponents\n3. Multiplication & Division\n4. Addition & Subtraction\n5. Equality (=)</div>
-                </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s1a')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s1a')">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= SESSION 1 PART B ================= -->
-    <section id="s1b" class="session-view">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's1b', 'bin-concepts')">Binary Concepts</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's1b', 'bin-dec')">Binary to Decimal</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's1b', 'dec-bin')">Decimal to Binary</button>
-            </div>
-        </div>
-
-        <div id="bin-concepts" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Base 2 (Binary) Representation</h3>
-                    <ul>
-                        <li>Computers store data using binary digits (<strong>bits</strong>): 0 and 1.</li>
-                        <li><strong>MSB:</strong> Most Significant Bit (leftmost).</li>
-                        <li><strong>LSB:</strong> Least Significant Bit (rightmost).</li>
-                        <li>Subscripts show the base: e.g., <code>1101<sub>2</sub></code> vs <code>13<sub>10</sub></code>.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="bin-dec" class="subtopic-content">
-            <div class="code-box">
-                <pre>Converting Binary 10011₂ to Decimal:
-
-Position weights from right (2⁰, 2¹, 2², 2³, 2⁴):
-= (1 × 2⁴) + (0 × 2³) + (0 × 2²) + (1 × 2¹) + (1 × 2⁰)
-= 16 + 0 + 0 + 2 + 1
-= 19₁₀</pre>
-            </div>
-        </div>
-
-        <div id="dec-bin" class="subtopic-content">
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Value</th>
-                            <th>Even Value (Value - 1 if odd)</th>
-                            <th>Bit Output (Value - Even)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>13</td><td>12</td><td>1 (LSB)</td></tr>
-                        <tr><td>6</td><td>6</td><td>0</td></tr>
-                        <tr><td>3</td><td>2</td><td>1</td></tr>
-                        <tr><td>1</td><td>0</td><td>1 (MSB)</td></tr>
-                    </tbody>
-                </table>
-            </div>
-            <p style="color: var(--accent-blue); font-weight: bold;">Reading bottom to top gives: 1101₂</p>
-        </div>
-
-        <div class="flashcard-section">
-            <h3>Session 1 Part B Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc1b')">
-                <div id="fc1b" class="flashcard">
-                    <div class="card-face card-front">Convert Decimal 13 to Binary.</div>
-                    <div class="card-face card-back">13₁₀ = 1101₂</div>
-                </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s1b')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s1b')">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= SESSION 2 PART A ================= -->
-    <section id="s2a" class="session-view">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's2a', 'hex-intro')">Hexadecimal Digits</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's2a', 'hex-bin-table')">4-Bit Mapping Table</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's2a', 'hex-conversions')">Hex &lt;--&gt; Binary Conversions</button>
-            </div>
-        </div>
-
-        <div id="hex-intro" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Base 16 (Hexadecimal) Fundamentals</h3>
-                    <ul>
-                        <li>Uses 16 digits: <strong>0–9</strong> and <strong>A–F</strong>.</li>
-                        <li><strong>A₁₆</strong> = 10₁₀ | <strong>B₁₆</strong> = 11₁₀ | <strong>C₁₆</strong> = 12₁₀</li>
-                        <li><strong>D₁₆</strong> = 13₁₀ | <strong>E₁₆</strong> = 14₁₀ | <strong>F₁₆</strong> = 15₁₀</li>
-                        <li><strong>Purpose:</strong> Succinctly represents computer memory contents (e.g., F₁₆ represents four binary ones: 1111₂).</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="hex-bin-table" class="subtopic-content">
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Hex Digit</th>
-                            <th>Decimal Equivalent</th>
-                            <th>4-Bit Binary Pattern</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>0</td><td>0</td><td>0000</td></tr>
-                        <tr><td>1</td><td>1</td><td>0001</td></tr>
-                        <tr><td>2</td><td>2</td><td>0010</td></tr>
-                        <tr><td>3</td><td>3</td><td>0011</td></tr>
-                        <tr><td>4</td><td>4</td><td>0100</td></tr>
-                        <tr><td>5</td><td>5</td><td>0101</td></tr>
-                        <tr><td>6</td><td>6</td><td>0110</td></tr>
-                        <tr><td>7</td><td>7</td><td>0111</td></tr>
-                        <tr><td>8</td><td>8</td><td>1000</td></tr>
-                        <tr><td>9</td><td>9</td><td>1001</td></tr>
-                        <tr><td>A</td><td>10</td><td>1010</td></tr>
-                        <tr><td>B</td><td>11</td><td>1011</td></tr>
-                        <tr><td>C</td><td>12</td><td>1100</td></tr>
-                        <tr><td>D</td><td>13</td><td>1101</td></tr>
-                        <tr><td>E</td><td>14</td><td>1110</td></tr>
-                        <tr><td>F</td><td>15</td><td>1111</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="hex-conversions" class="subtopic-content">
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">Convert Hex to Binary (e.g., ACE₁₆ & 3AF₁₆)</button>
-                <div class="accordion-body">
-                    <p><strong>Rule:</strong> Replace each Hex digit with its 4-bit binary group.</p>
-                    <div class="code-box">
-                        <pre>ACE₁₆ to Binary:
-A -> 1010
-C -> 1100
-E -> 1110
-Result = 101011001110₂
-
-3AF₁₆ to Binary:
-3 -> 0011 (Drop leading zeros -> 11)
-A -> 1010
-F -> 1111
-Result = 1110101111₂</pre>
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-award text-pinkAccent-400"></i> Assessment Overview (100%)
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-slate-950/70 rounded-xl border border-white/10 flex justify-between items-center">
+                                <div>
+                                    <span class="text-xs text-brand-400 font-bold uppercase">Assessment 1</span>
+                                    <h4 class="text-base font-semibold text-slate-100">Homework Quiz 1</h4>
+                                    <p class="text-xs text-slate-400">Week 5</p>
+                                </div>
+                                <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyanAccent-400">25%</div>
+                            </div>
+                            <div class="p-4 bg-slate-950/70 rounded-xl border border-white/10 flex justify-between items-center">
+                                <div>
+                                    <span class="text-xs text-cyanAccent-400 font-bold uppercase">Assessment 2</span>
+                                    <h4 class="text-base font-semibold text-slate-100">Homework Quiz 2</h4>
+                                    <p class="text-xs text-slate-400">Week 11</p>
+                                </div>
+                                <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-pinkAccent-400">75%</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">Convert Binary to Hex (e.g., 11111011011₂)</button>
-                <div class="accordion-body">
-                    <p><strong>Rule:</strong> Group bits into sets of 4 from right to left (pad leading zeros on the left if necessary).</p>
-                    <div class="code-box">
-                        <pre>Convert 11111011011₂ to Hex:
+            <!-- S1 PART B -->
+            <section id="s1-part-b" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-hashtag"></i></span>
+                        Session 1 Part B: Numbers & Expressions
+                    </h2>
+                    <p class="text-slate-300 text-sm">Base 10 positional representation, Most/Least Significant Digits, and arithmetic operators.</p>
+                </div>
 
-1. Group in 4s from right: 111 | 1101 | 1011
-2. Pad leading 0s on left group: 0111 | 1101 | 1011
-3. Convert each group:
-   0111₂ = 7₁₆
-   1101₂ = D₁₆
-   1011₂ = B₁₆
-Result = 7DB₁₆</pre>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-4">Decimal Position Values</h3>
+                    <div class="bg-slate-950/80 p-6 rounded-2xl border border-white/5 flex justify-center overflow-x-auto">
+                        <svg viewBox="0 0 700 180" class="w-full max-w-[650px] h-auto">
+                            <text x="350" y="70" text-anchor="middle" fill="#38bdf8" font-size="36" font-weight="bold" letter-spacing="8">5421.3456</text>
+                            <path d="M 160 50 C 160 20, 200 20, 220 20" fill="none" stroke="#f43f5e" stroke-width="2"/>
+                            <rect x="225" y="5" width="160" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+                            <text x="305" y="24" text-anchor="middle" fill="#fecdd3" font-size="11" font-weight="bold">MSD (Most Significant)</text>
+                            <path d="M 540 50 C 540 20, 500 20, 480 20" fill="none" stroke="#f43f5e" stroke-width="2"/>
+                            <rect x="315" y="140" width="160" height="28" rx="6" fill="#881337" stroke="#f43f5e"/>
+                            <text x="395" y="159" text-anchor="middle" fill="#fecdd3" font-size="11" font-weight="bold">LSD (Least Significant)</text>
+                            <path d="M 540 85 C 540 155, 480 155, 480 155" fill="none" stroke="#f43f5e" stroke-width="2"/>
+                            <text x="350" y="115" text-anchor="middle" fill="#94a3b8" font-size="12" font-family="monospace">(5×1000) + (4×100) + (2×10) + (1×1) + (3/10) + ...</text>
+                        </svg>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="flashcard-section">
-            <h3>Session 2 Part A Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc2a')">
-                <div id="fc2a" class="flashcard">
-                    <div class="card-face card-front">What are the decimal values of Hex digits A, C, and F?</div>
-                    <div class="card-face card-back">A = 10\nC = 12\nF = 15</div>
+            <!-- S1 PART C -->
+            <section id="s1-part-c" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-arrow-down-short-wide"></i></span>
+                        Session 1 Part C: Order of Precedence
+                    </h2>
+                    <p class="text-slate-300 text-sm">Standard arithmetic hierarchy and left-to-right evaluation rules.</p>
                 </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s2a')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s2a')">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= SESSION 2 PART B ================= -->
-    <section id="s2b" class="session-view">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's2b', 'propositions')">Propositions</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'logic-ops-1')">Operators: NOT, AND, OR</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'logic-ops-2')">Operators: XOR, Implication, Equivalence</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's2b', 'truth-summary')">Master Truth Table</button>
-            </div>
-        </div>
-
-        <div id="propositions" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Propositions & Boolean Variables</h3>
-                    <ul>
-                        <li><strong>Proposition:</strong> A declarative statement that is strictly <strong>True (T / 1)</strong> or <strong>False (F / 0)</strong>.</li>
-                        <li><strong>Examples:</strong> "Paris is the capital of France" (True), "2 + 2 = 5" (False).</li>
-                        <li><strong>Not Propositions:</strong> Questions ("Is it raining?"), Commands ("Go away!"), or self-referential paradoxes.</li>
-                        <li><strong>Boolean Variable:</strong> A letter representing a proposition (e.g., <code>p = 'I am in my room'</code>).</li>
-                        <li><strong>Atomic vs Compound:</strong> Atomic propositions are single variables; compound propositions join atomic ones using logic operators.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="logic-ops-1" class="subtopic-content">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Negation (NOT: ¬, ~)</h3>
-                    <p>Flips the truth value.</p>
-                    <ul>
-                        <li>If <code>p = T</code>, then <code>¬p = F</code></li>
-                        <li>If <code>p = F</code>, then <code>¬p = T</code></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Conjunction (AND: ∧)</h3>
-                    <p>True <strong>only if both</strong> operands are True.</p>
-                    <ul>
-                        <li>T ∧ T = <strong>T</strong></li>
-                        <li>T ∧ F = <strong>F</strong>, F ∧ T = <strong>F</strong>, F ∧ F = <strong>F</strong></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Disjunction (OR: ∨)</h3>
-                    <p>True if <strong>at least one</strong> operand is True.</p>
-                    <ul>
-                        <li>F ∨ F = <strong>F</strong></li>
-                        <li>T ∨ T = <strong>T</strong>, T ∨ F = <strong>T</strong>, F ∨ T = <strong>T</strong></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="logic-ops-2" class="subtopic-content">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Exclusive OR (XOR: ⊕)</h3>
-                    <p>True if operands are <strong>different</strong> (one True, one False).</p>
-                    <ul>
-                        <li>T ⊕ F = <strong>T</strong>, F ⊕ T = <strong>T</strong></li>
-                        <li>T ⊕ T = <strong>F</strong>, F ⊕ F = <strong>F</strong></li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Conditional / Implication (→)</h3>
-                    <p><code>p → q</code> ("If p, then q"). False <strong>only if p is True and q is False</strong>.</p>
-                    <ul>
-                        <li>T → F = <strong>F</strong></li>
-                        <li>T → T = <strong>T</strong>, F → T = <strong>T</strong>, F → F = <strong>T</strong></li>
-                        <li><em>Memory aid:</em> "If you are late (T) and NOT fired (F), the promise was broken (F)".</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>Bi-conditional / Equivalence (↔)</h3>
-                    <p><code>p ↔ q</code> ("p if and only if q"). True <strong>only when both have the same truth value</strong>.</p>
-                    <ul>
-                        <li>T ↔ T = <strong>T</strong>, F ↔ F = <strong>T</strong></li>
-                        <li>T ↔ F = <strong>F</strong>, F ↔ T = <strong>F</strong></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="truth-summary" class="subtopic-content">
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>p</th>
-                            <th>q</th>
-                            <th>¬p</th>
-                            <th>p ∧ q (AND)</th>
-                            <th>p ∨ q (OR)</th>
-                            <th>p ⊕ q (XOR)</th>
-                            <th>p → q (IF-THEN)</th>
-                            <th>p ↔ q (IFF)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr>
-                        <tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
-                        <tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>F</td></tr>
-                        <tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="flashcard-section">
-            <h3>Session 2 Part B Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc2b')">
-                <div id="fc2b" class="flashcard">
-                    <div class="card-face card-front">When is the Conditional statement (p → q) FALSE?</div>
-                    <div class="card-face card-back">ONLY when p is True and q is False (T → F = F).</div>
-                </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s2b')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s2b')">Next</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= SESSION 3 PART A ================= -->
-    <section id="s3a" class="session-view">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's3a', 'bool-precedence')">Boolean Precedence Rules</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's3a', 'eval-examples')">Step-by-Step Evaluations</button>
-            </div>
-        </div>
-
-        <div id="bool-precedence" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Boolean Operators Order of Precedence</h3>
-                    <ul>
-                        <li><strong>1. Parentheses ( ):</strong> Highest precedence.</li>
-                        <li><strong>2. Negation (~ / ¬):</strong> Evaluated next.</li>
-                        <li><strong>3. Conjunction (∧):</strong> Logical AND.</li>
-                        <li><strong>4. Disjunction (∨):</strong> Logical OR.</li>
-                        <li><strong>5. Equal Precedence (⊕, →, ↔):</strong> XOR, Conditional, Bi-conditional.</li>
-                        <li><strong>Direction Rule:</strong> When operators have equal precedence, evaluate from <strong>RIGHT to LEFT</strong> (opposite to arithmetic math!).</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Precedence Level</th>
-                            <th>Operator Symbol</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>1 (Highest)</td><td><code>( )</code></td><td>Parentheses</td></tr>
-                        <tr><td>2</td><td><code>~</code> / <code>¬</code></td><td>Negation (NOT)</td></tr>
-                        <tr><td>3</td><td><code>∧</code></td><td>Conjunction (AND)</td></tr>
-                        <tr><td>4</td><td><code>∨</code></td><td>Disjunction (OR)</td></tr>
-                        <tr><td>5 (Lowest)</td><td><code>⊕ , → , ↔</code></td><td>XOR, Conditional, Bi-conditional</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="eval-examples" class="subtopic-content">
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">Example 1: Evaluate T ∧ T → F</button>
-                <div class="accordion-body">
-                    <div class="code-box">
-                        <pre>Evaluate: T ∧ T → F
-
-1. AND (∧) has higher precedence than Conditional (→).
-2. Compute (T ∧ T) = T.
-3. Expression becomes: T → F
-4. Compute T → F = F.
-Result = F</pre>
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <div class="p-4 bg-slate-950/80 rounded-xl font-mono text-sm text-slate-200 space-y-2 border border-white/5">
+                        <div class="text-xs text-slate-400 font-sans uppercase font-bold">Reduction Example:</div>
+                        <div>5 × 5 + 3 × 12 - 6 × 5 × 8 / 2</div>
+                        <div>➔ 25 + 36 - 240 / 2</div>
+                        <div>➔ 61 - 120 = <span class="text-emerald-400 font-bold">-59</span></div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">Example 2: Evaluate ~((T ∧ F) → ~T) ∨ F</button>
-                <div class="accordion-body">
-                    <div class="code-box">
-                        <pre>Evaluate: ~((T ∧ F) → ~T) ∨ F
+            <!-- S1 PART D -->
+            <section id="s1-part-d" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-code"></i></span>
+                        Session 1 Part D: Parentheses
+                    </h2>
+                    <p class="text-slate-300 text-sm">Overriding standard order of precedence, handling nested parentheses, and stepwise expression reduction.</p>
+                </div>
 
-Step 1: Inner parentheses (T ∧ F) = F => ~((F) → ~T) ∨ F
-Step 2: Negation inside parenthesis (~T = F) => ~(F → F) ∨ F
-Step 3: Conditional (F → F = T) => ~(T) ∨ F
-Step 4: Negation ~(T) = F => F ∨ F
-Step 5: Disjunction F ∨ F = F
-Result = F</pre>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-cyanAccent-400"></i> Why Do We Need Parentheses?
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            Standard order of precedence dictates that multiplication happens before addition. For example, <code class="bg-slate-950 text-emerald-400 px-2 py-0.5 rounded font-mono">3 + 4 × 5 = 23</code> because <code class="text-cyanAccent-400 font-mono">4 × 5 = 20</code> is evaluated first.
+                        </p>
+                        <blockquote class="p-3 bg-slate-950/80 rounded-xl border-l-4 border-cyanAccent-500 text-xs text-slate-200 italic">
+                            If we want <strong class="text-white">3 + 7</strong> to be calculated first, standard rules fail. <strong class="text-cyanAccent-400">Parentheses ()</strong> give us the power to override standard operator precedence!
+                        </blockquote>
+                    </div>
+
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-pinkAccent-400"></i> Updated Order of Precedence
+                        </h3>
+                        <div class="overflow-hidden rounded-xl border border-white/10 text-xs font-mono">
+                            <table class="w-full text-center">
+                                <thead class="bg-slate-950/90 text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="p-2 border-b border-white/10">Priority</th>
+                                        <th class="p-2 border-b border-white/10">Operator / Symbol</th>
+                                        <th class="p-2 border-b border-white/10">Meaning</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 bg-slate-900/40 text-slate-200">
+                                    <tr class="bg-brand-500/10 font-bold text-brand-400">
+                                        <td class="p-2">1 (Highest)</td>
+                                        <td class="p-2 text-cyanAccent-400 text-sm">( )</td>
+                                        <td class="p-2 text-left">Parentheses (Innermost First)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">2</td>
+                                        <td class="p-2 text-emerald-400">x , /</td>
+                                        <td class="p-2 text-left">Multiplication & Division (Left to Right)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">3</td>
+                                        <td class="p-2 text-amber-400">+ , -</td>
+                                        <td class="p-2 text-left">Addition & Subtraction (Left to Right)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">4 (Lowest)</td>
+                                        <td class="p-2 text-pinkAccent-400">=</td>
+                                        <td class="p-2 text-left">Equality Assignment</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="accordion-item">
-                <button class="accordion-header" onclick="toggleAccordion(this)">Example 3: Evaluate (T ⊕ ((T → F) ∨ ~F)) ↔ T</button>
-                <div class="accordion-body">
-                    <div class="code-box">
-                        <pre>Evaluate: (T ⊕ ((T → F) ∨ ~F)) ↔ T
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-brand-400 flex items-center gap-2">
+                        <i class="fa-solid fa-gears text-amber-400"></i> Rules for Nested Parentheses <code class="text-xs bg-slate-950 text-cyanAccent-400 px-2 py-0.5 rounded font-mono">( ( 6 + (3 + 4) ) × 5 )</code>
+                    </h3>
+                    <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-300 bg-slate-950/80 p-5 rounded-2xl border border-white/5">
+                        <li class="pb-1.5 border-b border-white/5">
+                            Scan the expression from <strong class="text-white">left to right</strong> until you find the <strong class="text-cyanAccent-400">first right parenthesis ")"</strong>.
+                        </li>
+                        <li class="py-1.5 border-b border-white/5">
+                            Find the <strong class="text-emerald-400">left parenthesis "(" closest to it on its left</strong>.
+                        </li>
+                        <li class="py-1.5 border-b border-white/5">
+                            Evaluate the sub-expression between this pair of parentheses using normal precedence rules, and replace the entire parenthesized section with the result value.
+                        </li>
+                        <li class="pt-1.5">
+                            Repeat the process from step 1 on the simplified expression until all parentheses are eliminated!
+                        </li>
+                    </ol>
+                </div>
 
-1. Inner conditional (T → F = F) and negation (~F = T) => (T ⊕ (F ∨ T)) ↔ T
-2. Inner disjunction (F ∨ T = T) => (T ⊕ T) ↔ T
-3. Inner XOR (T ⊕ T = F) => F ↔ T
-4. Final Bi-conditional (F ↔ T = F) => F</pre>
+                <div class="glass-card rounded-2xl p-6 border border-cyanAccent-500/20 shadow-xl glow-brand">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-cyanAccent-400"></i> Interactive Parentheses Evaluator
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="parenExprInput" value="((6 + (5 + 3) * 12) / (3 + 5))" class="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-emerald-400 font-mono text-sm focus:border-brand-500 focus:outline-none">
+                        <button onclick="evaluateParenthesesSteps()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-cyanAccent-500 hover:from-brand-500 hover:to-cyanAccent-400 text-white font-semibold rounded-xl transition-all shadow-md glow-brand whitespace-nowrap">
+                            <i class="fa-solid fa-play mr-1.5"></i> Evaluate Steps
+                        </button>
+                    </div>
+                    <div id="parenStepsOutput" class="mt-4 p-4 bg-slate-950/90 rounded-xl font-mono text-xs text-slate-200 border border-white/10 space-y-2 hidden"></div>
+                </div>
+            </section>
+
+            <!-- S1 PART E -->
+            <section id="s1-part-e" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-superscript"></i></span>
+                        Session 1 Part E: Exponents (Indices)
+                    </h2>
+                    <p class="text-slate-300 text-sm">Base-index representation, exponential rules, and precedence hierarchy.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-arrow-up-right-dots text-cyanAccent-400"></i> Base-Index Form ($a^b$)
+                        </h3>
+                        <p class="text-sm text-slate-300 mb-4">Exponents allow succinct representation of very large numbers ($10^{27}$).</p>
+                        <div class="p-4 bg-slate-950/80 rounded-xl border border-white/5 space-y-2 text-xs font-mono">
+                            <div>• <span class="text-cyanAccent-400 font-bold">Base</span> = Number being multiplied.</div>
+                            <div>• <span class="text-pinkAccent-400 font-bold">Index / Power</span> = Number of times base multiplies itself.</div>
+                            <div class="pt-2 border-t border-white/10 text-emerald-400 font-bold text-sm">
+                                $2^8 = 2 \times 2 \times 2 \times 2 \times 2 \times 2 \times 2 \times 2 = 256$
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-emerald-400"></i> Exponent Rules & Precedence
+                        </h3>
+                        <ul class="space-y-2 text-xs text-slate-300 mb-4">
+                            <li class="p-2 bg-slate-950/60 rounded-lg border border-white/5">
+                                <strong class="text-amber-400">Zero Power Rule:</strong> Any non-zero number to power 0 equals 1 ($5^0 = 1$).
+                            </li>
+                            <li class="p-2 bg-slate-950/60 rounded-lg border border-white/5">
+                                <strong class="text-cyanAccent-400">Base 10 Powers:</strong> $10^n$ equals $1$ followed by $n$ zeros ($10^5 = 100000$).
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="flashcard-section">
-            <h3>Session 3 Part A Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc3a')">
-                <div id="fc3a" class="flashcard">
-                    <div class="card-face card-front">In Boolean expressions without parentheses, what direction are equal-precedence operators evaluated?</div>
-                    <div class="card-face card-back">From RIGHT to LEFT (opposite to normal arithmetic).</div>
+            <!-- S1 PART F -->
+            <section id="s1-part-f" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-microchip"></i></span>
+                        Session 1 Part F: The Computer's World (Binary System)
+                    </h2>
+                    <p class="text-slate-300 text-sm">Base 2 binary storage, bit positions, MSB/LSB, and binary-to-decimal conversion.</p>
                 </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s3a')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s3a')">Next</button>
-            </div>
-        </div>
-    </section>
 
-    <!-- ================= SESSION 3 PART B ================= -->
-    <section id="s3b" class="session-view">
-        <div class="subtab-wrapper">
-            <div class="subtab-bar">
-                <button class="subtab-btn active" onclick="switchSubTab(this, 's3b', 'column-method')">Column-Based Table Method</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's3b', 'table-2var')">2-Variable Construction Example</button>
-                <button class="subtab-btn" onclick="switchSubTab(this, 's3b', 'table-3var')">3-Variable Base Setup (8 Rows)</button>
-            </div>
-        </div>
-
-        <div id="column-method" class="subtopic-content active">
-            <div class="grid-layout">
-                <div class="card">
-                    <h3>Methodology for Building Truth Tables</h3>
-                    <ul>
-                        <li>Assign initial columns (1, 2, 3...) to atomic Boolean variables in alphabetical order.</li>
-                        <li>Replace variables in the proposition with their column numbers (e.g., <code>r ∧ ~s</code> becomes <code>1 ∧ ~2</code>).</li>
-                        <li>Evaluate operations step-by-step following precedence, placing intermediate sub-expressions in new columns.</li>
-                        <li>Once finished, remove intermediate reference columns to leave the final polished truth table.</li>
-                    </ul>
+                <div class="glass-card rounded-2xl p-6 border border-brand-500/20 shadow-xl glow-brand">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-cyanAccent-400"></i> Interactive Binary ➔ Decimal Converter
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="text" id="binInput" value="1101001" class="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-emerald-400 font-mono text-sm focus:border-brand-500 focus:outline-none">
+                        <button onclick="convertBinToDec()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-cyanAccent-500 hover:from-brand-500 hover:to-cyanAccent-400 text-white font-semibold rounded-xl transition-all shadow-md glow-brand whitespace-nowrap">
+                            Convert to Decimal
+                        </button>
+                    </div>
+                    <div id="binToDecOutput" class="mt-4 p-4 bg-slate-950/90 rounded-xl font-mono text-xs text-slate-200 border border-white/10 space-y-2 hidden"></div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div id="table-2var" class="subtopic-content">
-            <p style="color: var(--text-muted); margin-bottom: 12px;">Step-by-step construction of truth table for <code>r ∧ ~s</code>:</p>
-            
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Col 1 (r)</th>
-                            <th>Col 2 (s)</th>
-                            <th>Col 3 (~2)</th>
-                            <th>Col 4 (1 ∧ 3) [r ∧ ~s]</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>T</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
-                        <tr><td>T</td><td>F</td><td>T</td><td><strong>T</strong></td></tr>
-                        <tr><td>F</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
-                        <tr><td>F</td><td>F</td><td>T</td><td><strong>F</strong></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="table-3var" class="subtopic-content">
-            <p style="color: var(--text-muted); margin-bottom: 12px;">Standard 8-row initialization for 3 variables (p, r, s) and final evaluation of <code>s ∧ p ∨ r</code>:</p>
-            
-            <div class="table-box">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Col 1 (p)</th>
-                            <th>Col 2 (r)</th>
-                            <th>Col 3 (s)</th>
-                            <th>Col 4 (3 ∧ 1)</th>
-                            <th>Col 5 (4 ∨ 2) [s ∧ p ∨ r]</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>T</td><td>T</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
-                        <tr><td>T</td><td>T</td><td>F</td><td>F</td><td><strong>T</strong></td></tr>
-                        <tr><td>T</td><td>F</td><td>T</td><td>T</td><td><strong>T</strong></td></tr>
-                        <tr><td>T</td><td>F</td><td>F</td><td>F</td><td><strong>F</strong></td></tr>
-                        <tr><td>F</td><td>T</td><td>T</td><td>F</td><td><strong>T</strong></td></tr>
-                        <tr><td>F</td><td>T</td><td>F</td><td>F</td><td><strong>T</strong></td></tr>
-                        <tr><td>F</td><td>F</td><td>T</td><td>F</td><td><strong>F</strong></td></tr>
-                        <tr><td>F</td><td>F</td><td>F</td><td>F</td><td><strong>F</strong></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="flashcard-section">
-            <h3>Session 3 Part B Flashcards</h3>
-            <div class="flashcard-container" onclick="flipCard('fc3b')">
-                <div id="fc3b" class="flashcard">
-                    <div class="card-face card-front">How many truth rows are required for a compound proposition with 3 Boolean variables?</div>
-                    <div class="card-face card-back">8 rows (2³ = 8).</div>
+            <!-- S1 PART G -->
+            <section id="s1-part-g" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-table-cells"></i></span>
+                        Session 1 Part G: Decimal to Binary Conversion
+                    </h2>
+                    <p class="text-slate-300 text-sm">Algorithmic 3-column division table for converting Decimal numbers to Binary.</p>
                 </div>
-            </div>
-            <div class="flashcard-controls">
-                <button class="fc-btn" onclick="prevCard('s3b')">Previous</button>
-                <button class="fc-btn" onclick="nextCard('s3b')">Next</button>
-            </div>
-        </div>
-    </section>
 
+                <div class="glass-card rounded-2xl p-6 border border-cyanAccent-500/20 shadow-xl glow-brand">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-cyanAccent-400"></i> Interactive Decimal ➔ Binary Table Generator
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="number" id="decInput" value="824" min="0" class="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-emerald-400 font-mono text-sm focus:border-brand-500 focus:outline-none">
+                        <button onclick="generateDecToBinTable()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-cyanAccent-500 hover:from-brand-500 hover:to-cyanAccent-400 text-white font-semibold rounded-xl transition-all shadow-md glow-brand whitespace-nowrap">
+                            Generate Conversion Table
+                        </button>
+                    </div>
+                    <div id="decToBinOutput" class="mt-4 p-4 bg-slate-950/90 rounded-xl font-mono text-xs text-slate-200 border border-white/10 space-y-2 hidden"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- SESSION 2 CONTENT CONTAINER -->
+        <div id="session-2-content" class="session-container hidden space-y-6">
+
+            <!-- S2 PART A -->
+            <section id="s2-part-a" class="tab-content space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-cube"></i></span>
+                        Session 2 Part A: The Hexadecimal Base (Base 16)
+                    </h2>
+                    <p class="text-slate-300 text-sm">Succinct representation of computer memory, Hex-to-Binary nibble conversion, and zero-padding rules.</p>
+                </div>
+            </section>
+
+            <!-- S2 PART B -->
+            <section id="s2-part-b" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-toggle-on"></i></span>
+                        Session 2 Part B: Boolean Logic & Propositions
+                    </h2>
+                    <p class="text-slate-300 text-sm">Defining logical propositions, truth values (True / False), non-propositions, and Boolean variables.</p>
+                </div>
+            </section>
+
+            <!-- S2 PART C -->
+            <section id="s2-part-c" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-diagram-next"></i></span>
+                        Session 2 Part C: Compound Propositions & Connectives
+                    </h2>
+                    <p class="text-slate-300 text-sm">Building complex logic by combining atomic propositions using unary and binary operators.</p>
+                </div>
+            </section>
+
+            <!-- S2 PART D -->
+            <section id="s2-part-d" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-filter"></i></span>
+                        Session 2 Part D: Fundamental Operators (AND, OR, NOT)
+                    </h2>
+                    <p class="text-slate-300 text-sm">Truth table definitions for Conjunction (∧), Disjunction (∨), and Negation (¬).</p>
+                </div>
+            </section>
+
+            <!-- S2 PART E -->
+            <section id="s2-part-e" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-code-branch"></i></span>
+                        Session 2 Part E: Advanced Operators (XOR, Implication, Bi-conditional)
+                    </h2>
+                    <p class="text-slate-300 text-sm">Truth tables for Exclusive OR (⊕), Conditional (→), Bi-conditional (↔), Tautologies, and Contradictions.</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- SESSION 3 CONTENT CONTAINER -->
+        <div id="session-3-content" class="session-container hidden space-y-6">
+
+            <!-- S3 PART A -->
+            <section id="s3-part-a" class="tab-content space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-check-double"></i></span>
+                        Session 3 Part A: Evaluating Compound Propositions
+                    </h2>
+                    <p class="text-slate-300 text-sm">Truth values ($T, F$) as standalone atomic propositions, variable replacement, and truth table positional lookup.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-quote-left text-cyanAccent-400"></i> Are 'True' and 'False' Propositions?
+                        </h3>
+                        <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                            Yes! <code class="text-emerald-400 font-mono">'true' = T</code> is a statement whose truth value is <strong class="text-white">True</strong>, and <code class="text-rose-400 font-mono">'false' = F</code> is a statement whose truth value is <strong class="text-white">False</strong>.
+                        </p>
+                        <div class="p-3 bg-slate-950/80 rounded-xl border border-white/10 text-xs font-mono space-y-1">
+                            <div>• <span class="text-cyanAccent-400 font-bold">Compound Expression:</span> <code class="text-white">F ∧ T</code> or <code class="text-white">F → T</code></div>
+                            <div>• We can evaluate truth values directly using standard truth tables!</div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-arrows-to-dot text-pinkAccent-400"></i> Place-Marker Interpretation
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            In truth tables, <code class="text-brand-400 font-mono">p</code> and <code class="text-brand-400 font-mono">q</code> act as <strong class="text-white">positional place-markers</strong>:
+                        </p>
+                        <div class="space-y-2 text-xs font-mono">
+                            <div class="p-2.5 bg-slate-950/80 rounded-lg border border-white/5">
+                                <span class="text-cyanAccent-400 font-bold">p Marker:</span> Expression on the <strong class="text-white">LEFT</strong> of operator.
+                            </div>
+                            <div class="p-2.5 bg-slate-950/80 rounded-lg border border-white/5">
+                                <span class="text-pinkAccent-400 font-bold">q Marker:</span> Expression on the <strong class="text-white">RIGHT</strong> of operator.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conditional Evaluation Example Box -->
+                <div class="glass-card rounded-2xl p-6 border border-brand-500/20">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-emerald-400"></i> Stepwise Replacement Example: <span class="text-white font-mono">q → p</span> when <span class="text-cyanAccent-400 font-mono">p = T, q = F</span>
+                    </h3>
+                    <div class="p-4 bg-slate-950/80 rounded-xl font-mono text-xs text-slate-200 space-y-2 border border-white/5">
+                        <div>Step 1 (Variable Substitution): Replace <code class="text-cyanAccent-400">p</code> with <strong class="text-white">T</strong> and <code class="text-cyanAccent-400">q</code> with <strong class="text-white">F</strong> ➔ <span class="text-pinkAccent-400 font-bold">F → T</span></div>
+                        <div>Step 2 (Truth Table Lookup): Look up row where Left Cell = <strong class="text-white">F</strong> and Right Cell = <strong class="text-white">T</strong></div>
+                        <div class="pt-2 border-t border-white/10 text-emerald-400 font-bold text-sm">Result: F → T = True (T)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- S3 PART B -->
+            <section id="s3-part-b" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-network-wired"></i></span>
+                        Session 3 Part B: Complex Propositions & Operator Precedence
+                    </h2>
+                    <p class="text-slate-300 text-sm">Evaluating multi-operator logic, Boolean hierarchy, and the Right-to-Left rule for equal precedence operators.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Precedence Table Card -->
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-list-ol text-cyanAccent-400"></i> Boolean Order of Precedence
+                        </h3>
+                        <div class="overflow-hidden rounded-xl border border-white/10 text-xs font-mono">
+                            <table class="w-full text-center">
+                                <thead class="bg-slate-950/90 text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="p-2 border-b border-white/10">Priority</th>
+                                        <th class="p-2 border-b border-white/10">Operator / Symbol</th>
+                                        <th class="p-2 border-b border-white/10">Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-white/5 bg-slate-900/40 text-slate-200">
+                                    <tr class="bg-brand-500/10 font-bold text-brand-400">
+                                        <td class="p-2">1 (Highest)</td>
+                                        <td class="p-2 text-cyanAccent-400 text-sm">( )</td>
+                                        <td class="p-2 text-left">Parentheses</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">2</td>
+                                        <td class="p-2 text-pinkAccent-400">¬ or ~</td>
+                                        <td class="p-2 text-left">Negation (NOT)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">3</td>
+                                        <td class="p-2 text-emerald-400">∧</td>
+                                        <td class="p-2 text-left">Conjunction (AND)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2">4</td>
+                                        <td class="p-2 text-brand-400">∨</td>
+                                        <td class="p-2 text-left">Disjunction (OR)</td>
+                                    </tr>
+                                    <tr class="text-amber-400 font-bold">
+                                        <td class="p-2">5 (Lowest)</td>
+                                        <td class="p-2">⊕ , → , ↔</td>
+                                        <td class="p-2 text-left">XOR, Implication, Bi-conditional</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Critical Warning: Right to Left Rule -->
+                    <div class="glass-card glass-card-hover rounded-2xl p-6">
+                        <h3 class="text-lg font-semibold text-rose-400 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> CRITICAL: Right-to-Left Direction Rule
+                        </h3>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                            When Boolean operators in a proposition have the <strong class="text-white">SAME precedence level</strong> and there are no parentheses, evaluation proceeds from <strong class="text-cyanAccent-400">RIGHT TO LEFT</strong>!
+                        </p>
+                        <blockquote class="p-3 bg-slate-950/80 rounded-xl border-l-4 border-rose-500 text-xs text-slate-200 italic">
+                            <strong>Note:</strong> This is the EXACT OPPOSITE direction of standard arithmetic math expressions (which evaluate left-to-right).
+                        </blockquote>
+                    </div>
+                </div>
+
+                <!-- Complete Evaluation Trace Example -->
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-brand-400 flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project text-cyanAccent-400"></i> Step-by-Step Evaluation Walkthrough: <code class="text-xs bg-slate-950 text-emerald-400 px-2 py-0.5 rounded font-mono">¬(T ∧ F) → T ∨ ¬F</code>
+                    </h3>
+                    <div class="p-4 bg-slate-950/80 rounded-xl font-mono text-xs text-slate-200 space-y-2 border border-white/5">
+                        <div>1. Parentheses Priority: Evaluate <code class="text-cyanAccent-400">(T ∧ F)</code> ➔ <strong class="text-white">F</strong> | Expr: <code class="text-slate-300">¬F → T ∨ ¬F</code></div>
+                        <div>2. Negations (Right-to-Left): First rightmost <code class="text-pinkAccent-400">¬F</code> ➔ <strong class="text-white">T</strong> | Expr: <code class="text-slate-300">¬F → T ∨ T</code></div>
+                        <div>3. Remaining Negation: Evaluate <code class="text-pinkAccent-400">¬F</code> ➔ <strong class="text-white">T</strong> | Expr: <code class="text-slate-300">T → T ∨ T</code></div>
+                        <div>4. Disjunction (OR): Evaluate <code class="text-brand-400">T ∨ T</code> ➔ <strong class="text-white">T</strong> | Expr: <code class="text-slate-300">T → T</code></div>
+                        <div class="pt-2 border-t border-white/10 text-emerald-400 font-bold text-sm">Final Result: T → T = True (T)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- S3 PART C -->
+            <section id="s3-part-c" class="tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6 border border-white/10 shadow-xl">
+                    <h2 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                        <span class="p-2 bg-brand-500/20 text-brand-400 rounded-lg"><i class="fa-solid fa-table"></i></span>
+                        Session 3 Part C: Column-Indexed Truth Tables
+                    </h2>
+                    <p class="text-slate-300 text-sm">Systematic 3-step tabular reduction for complex propositions using column index references ($1 \wedge \neg 2$).</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 space-y-4">
+                    <h3 class="text-lg font-semibold text-brand-400 flex items-center gap-2">
+                        <i class="fa-solid fa-gears text-amber-400"></i> The Column-Indexing Reduction Algorithm
+                    </h3>
+                    <ol class="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-300 bg-slate-950/80 p-5 rounded-2xl border border-white/5 font-mono">
+                        <li class="pb-2 border-b border-white/5">
+                            <strong class="text-cyanAccent-400">Assign Column Numbers to Variables:</strong> Set $p \rightarrow \text{Col 1}$, $s \rightarrow \text{Col 2}$, $r \rightarrow \text{Col 3}$. Rewrite expression using column indices (e.g. $\neg s \wedge ((p \vee s) \oplus p) \rightarrow \neg 2 \wedge ((1 \vee 2) \oplus 1)$).
+                        </li>
+                        <li class="py-2 border-b border-white/5">
+                            <strong class="text-emerald-400">Sequential Sub-Expression Columns:</strong> Evaluate operations by order of precedence in new columns (Col 3: $1 \vee 2$, Col 4: $3 \oplus 1$, Col 5: $\neg 2$, Col 6: $5 \wedge 4$).
+                        </li>
+                        <li class="pt-2">
+                            <strong class="text-pinkAccent-400">Final Table Extraction:</strong> Remove intermediate construction columns and top index header to retain the clean, master truth table!
+                        </li>
+                    </ol>
+                </div>
+
+                <!-- SVG Demonstration 2 Table Matrix -->
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-table-cells text-cyanAccent-400"></i> Demonstration 2 Matrix Trace: <span class="text-white font-mono text-base">¬s ∧ ((p ∨ s) ⊕ p)</span>
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-center text-xs font-mono border-collapse rounded-xl overflow-hidden border border-white/10">
+                            <thead class="bg-slate-950/90 text-slate-400 uppercase">
+                                <tr>
+                                    <th class="p-2.5 border border-white/10">Col 1 (p)</th>
+                                    <th class="p-2.5 border border-white/10">Col 2 (s)</th>
+                                    <th class="p-2.5 border border-white/10 text-cyanAccent-400">Col 3 (1 ∨ 2)</th>
+                                    <th class="p-2.5 border border-white/10 text-amber-400">Col 4 (3 ⊕ 1)</th>
+                                    <th class="p-2.5 border border-white/10 text-pinkAccent-400">Col 5 (¬2)</th>
+                                    <th class="p-2.5 border border-white/10 text-emerald-400">Col 6 (5 ∧ 4)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5 bg-slate-900/40 text-slate-200">
+                                <tr><td>T</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">F</td><td class="text-emerald-400 font-bold bg-emerald-950/30">F</td></tr>
+                                <tr><td>T</td><td>F</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">T</td><td class="text-emerald-400 font-bold bg-emerald-950/30">F</td></tr>
+                                <tr><td>F</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">T</td><td class="text-pinkAccent-400">F</td><td class="text-emerald-400 font-bold bg-emerald-950/30">F</td></tr>
+                                <tr><td>F</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">T</td><td class="text-emerald-400 font-bold bg-emerald-950/30">F</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Interactive Column Truth Table Generator -->
+                <div class="glass-card rounded-2xl p-6 border border-brand-500/20 shadow-xl glow-brand">
+                    <h3 class="text-lg font-semibold text-brand-400 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-cyanAccent-400"></i> Interactive Column-Indexed Truth Table Generator
+                    </h3>
+                    <p class="text-xs text-slate-300 mb-4">Select a target compound proposition to generate its full column-indexed reduction sequence:</p>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <select id="s3ExprSelect" class="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-3 text-white font-mono text-xs focus:border-brand-500 focus:outline-none">
+                            <option value="demo1">r ∧ ¬s (2 Variables - 4 Rows)</option>
+                            <option value="demo2">¬s ∧ ((p ∨ s) ⊕ p) (2 Variables - 4 Rows)</option>
+                            <option value="demo3">s ∧ p ∨ r (3 Variables - 8 Rows)</option>
+                        </select>
+                        <button onclick="generateS3TruthTable()" class="px-6 py-3 bg-gradient-to-r from-brand-600 to-cyanAccent-500 hover:from-brand-500 hover:to-cyanAccent-400 text-white font-semibold rounded-xl transition-all shadow-md glow-brand whitespace-nowrap">
+                            Generate Table
+                        </button>
+                    </div>
+                    <div id="s3TableOutput" class="mt-4 p-4 bg-slate-950/90 rounded-xl font-mono text-xs text-slate-200 border border-white/10 space-y-2 hidden"></div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-slate-950/60 py-6 mt-12 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            Mathematics for Computing (MFC) — Course Study Guide (Sessions 1, 2 & 3)
+        </div>
+    </footer>
+
+    <!-- JavaScript Navigation & Tool Logic -->
     <script>
-        // Session Switching
-        function switchSession(btn, sessionId) {
-            document.querySelectorAll('.session-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.session-view').forEach(v => v.classList.remove('active'));
+        function switchSession(sessionId) {
+            // Hide all session content containers
+            document.querySelectorAll('.session-container').forEach(el => el.classList.add('hidden'));
+            
+            // Hide all session nav bars
+            document.querySelectorAll('.session-nav').forEach(el => el.classList.add('hidden'));
 
-            btn.classList.add('active');
-            document.getElementById(sessionId).classList.add('active');
+            // Deactivate session buttons
+            document.getElementById('session-1-btn').className = 'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50';
+            document.getElementById('session-2-btn').className = 'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50';
+            document.getElementById('session-3-btn').className = 'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800/50';
+
+            // Show selected session content and navigation bar
+            document.getElementById(sessionId + '-content').classList.remove('hidden');
+            document.getElementById(sessionId + '-nav').classList.remove('hidden');
+
+            // Highlight active session button
+            const activeBtn = document.getElementById(sessionId + '-btn');
+            activeBtn.className = 'px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand';
+
+            // Default to first sub-tab of that session
+            if (sessionId === 'session-1') {
+                switchTab('s1-part-a');
+            } else if (sessionId === 'session-2') {
+                switchTab('s2-part-a');
+            } else if (sessionId === 'session-3') {
+                switchTab('s3-part-a');
+            }
         }
 
-        // Sub-Tab Switching
-        function switchSubTab(btn, sessionId, subtopicId) {
-            const session = document.getElementById(sessionId);
-            session.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
-            session.querySelectorAll('.subtopic-content').forEach(c => c.classList.remove('active'));
+        function switchTab(tabId) {
+            let prefix = 's1';
+            if (tabId.startsWith('s2')) prefix = 's2';
+            if (tabId.startsWith('s3')) prefix = 's3';
+            
+            // Hide all tabs within current session content block
+            let sessionNum = '1';
+            if (prefix === 's2') sessionNum = '2';
+            if (prefix === 's3') sessionNum = '3';
 
-            btn.classList.add('active');
-            document.getElementById(subtopicId).classList.add('active');
+            const currentSessionContainer = document.getElementById(`session-${sessionNum}-content`);
+            currentSessionContainer.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+
+            // Deactivate all tab buttons in current session nav
+            document.querySelectorAll(`.${prefix}-tab-btn`).forEach(btn => {
+                btn.className = `${prefix}-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50`;
+            });
+
+            // Show target tab content
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            // Highlight active tab button
+            const activeTabBtn = document.getElementById(`btn-${tabId}`);
+            if (activeTabBtn) {
+                activeTabBtn.className = `${prefix}-tab-btn px-4 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-md glow-brand`;
+            }
         }
 
-        // Accordion Toggle
-        function toggleAccordion(header) {
-            const item = header.parentElement;
-            item.classList.toggle('active');
+        function evaluateParenthesesSteps() {
+            const input = document.getElementById('parenExprInput').value.trim();
+            const out = document.getElementById('parenStepsOutput');
+            out.classList.remove('hidden');
+
+            if (!input) {
+                out.innerHTML = `<span class="text-rose-400">Please enter a math expression.</span>`;
+                return;
+            }
+
+            let html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">Step-by-Step Reduction Sequence:</div>`;
+            let current = input;
+            let step = 1;
+            let safetyCounter = 0;
+
+            html += `<div class="p-2 bg-slate-900 rounded border border-white/5">Initial Expression: <span class="text-cyanAccent-400 font-bold">${current}</span></div>`;
+
+            while (current.includes('(') && safetyCounter < 15) {
+                safetyCounter++;
+                const rightIdx = current.indexOf(')');
+                if (rightIdx === -1) break;
+
+                const leftIdx = current.lastIndexOf('(', rightIdx);
+                if (leftIdx === -1) break;
+
+                const subExpr = current.substring(leftIdx + 1, rightIdx);
+                let evaluatedSub;
+
+                try {
+                    evaluatedSub = Function('"use strict";return (' + subExpr + ')')();
+                } catch (e) {
+                    out.innerHTML = `<span class="text-rose-400">Syntax error in expression sub-part: "${subExpr}"</span>`;
+                    return;
+                }
+
+                current = current.substring(0, leftIdx) + evaluatedSub + current.substring(rightIdx + 1);
+                html += `<div>• <span class="text-slate-400">Step ${step}:</span> Evaluate <span class="bg-emerald-950/60 text-emerald-400 px-1.5 py-0.5 rounded">(${subExpr})</span> ➔ <strong>${evaluatedSub}</strong> | New Expr: <span class="text-slate-200">${current}</span></div>`;
+                step++;
+            }
+
+            try {
+                const finalVal = Function('"use strict";return (' + current + ')')();
+                html += `<div class="mt-2 p-3 bg-emerald-950/40 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold text-sm text-center">Final Result = ${finalVal}</div>`;
+            } catch (e) {
+                html += `<div class="text-rose-400 text-xs">Error completing final evaluation.</div>`;
+            }
+
+            out.innerHTML = html;
         }
 
-        // Flashcards Data Store
-        const cardsData = {
-            s1a: [
-                { q: "What is the operator order of precedence?", a: "1. Parentheses ()\n2. Exponents\n3. Multiplication & Division\n4. Addition & Subtraction\n5. Equality (=)" },
-                { q: "How do you evaluate nested parentheses?", a: "Find the first right ')' from left to right, match with closest left '(', and solve the inside first." },
-                { q: "What is x⁰ for any non-zero x?", a: "1" }
-            ],
-            s1b: [
-                { q: "Convert Decimal 13 to Binary.", a: "13₁₀ = 1101₂" },
-                { q: "What do MSB and LSB stand for?", a: "MSB = Most Significant Bit (leftmost)\nLSB = Least Significant Bit (rightmost)" },
-                { q: "Convert Binary 101₂ to Decimal.", a: "(1×2²) + (0×2¹) + (1×2⁰) = 4 + 0 + 1 = 5₁₀" }
-            ],
-            s2a: [
-                { q: "What are the decimal values of Hex digits A, C, and F?", a: "A = 10\nC = 12\nF = 15" },
-                { q: "Convert Hex 3A₁₆ to Binary.", a: "3 = 0011 (or 11)\nA = 1010\nResult: 111010₂" },
-                { q: "How many binary bits correspond to one Hex digit?", a: "Exactly 4 binary bits." }
-            ],
-            s2b: [
-                { q: "When is the Conditional statement (p → q) FALSE?", a: "ONLY when p is True and q is False (T → F = F)." },
-                { q: "What makes an XOR (p ⊕ q) statement TRUE?", a: "When p and q have DIFFERENT truth values (one True, one False)." },
-                { q: "Is 'Go home!' a proposition?", a: "No, commands and questions are NOT propositions because they lack a truth value." }
-            ],
-            s3a: [
-                { q: "In Boolean expressions without parentheses, what direction are equal-precedence operators evaluated?", a: "From RIGHT to LEFT (opposite to normal arithmetic)." },
-                { q: "Evaluate T ∧ T → F.", a: "(T ∧ T) = T, then T → F = F. Final result: F." },
-                { q: "What is the precedence rank of Negation (~)?", a: "Rank 2 (Directly under parentheses)." }
-            ],
-            s3b: [
-                { q: "How many truth rows are required for a compound proposition with 3 Boolean variables?", a: "8 rows (2³ = 8)." },
-                { q: "In the column-based truth table method, what do numbers like '1 ∧ 3' represent?", a: "Evaluating the logical operation between the values calculated in Column 1 and Column 3." }
-            ]
-        };
+        function convertBinToDec() {
+            const raw = document.getElementById('binInput').value.trim();
+            const out = document.getElementById('binToDecOutput');
+            out.classList.remove('hidden');
 
-        const indices = { s1a: 0, s1b: 0, s2a: 0, s2b: 0, s3a: 0, s3b: 0 };
-        const cardIds = { s1a: 'fc1a', s1b: 'fc1b', s2a: 'fc2a', s2b: 'fc2b', s3a: 'fc3a', s3b: 'fc3b' };
+            if (!/^[01]+$/.test(raw)) {
+                out.innerHTML = `<span class="text-rose-400">Invalid binary string! Please enter digits consisting only of 0 and 1.</span>`;
+                return;
+            }
 
-        function flipCard(cardId) {
-            document.getElementById(cardId).classList.toggle('flipped');
+            let html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">Positional Value Calculation:</div>`;
+            let total = 0;
+            const len = raw.length;
+            const terms = [];
+
+            for (let i = 0; i < len; i++) {
+                const bit = parseInt(raw[i]);
+                const power = len - 1 - i;
+                const val = bit * Math.pow(2, power);
+                total += val;
+                terms.push(`(${bit} × 2<sup>${power}</sup>)`);
+            }
+
+            html += `<div class="text-slate-300 mb-2">${terms.join(' + ')}</div>`;
+            html += `<div class="p-3 bg-emerald-950/40 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold text-sm text-center">
+                ${raw}<sub>2</sub> = ${total}<sub>10</sub>
+            </div>`;
+
+            out.innerHTML = html;
         }
 
-        function nextCard(sessionKey) {
-            indices[sessionKey] = (indices[sessionKey] + 1) % cardsData[sessionKey].length;
-            updateCard(cardIds[sessionKey], cardsData[sessionKey][indices[sessionKey]]);
+        function generateDecToBinTable() {
+            const rawVal = parseInt(document.getElementById('decInput').value);
+            const out = document.getElementById('decToBinOutput');
+            out.classList.remove('hidden');
+
+            if (isNaN(rawVal) || rawVal < 0) {
+                out.innerHTML = `<span class="text-rose-400">Please enter a valid non-negative integer.</span>`;
+                return;
+            }
+
+            if (rawVal === 0) {
+                out.innerHTML = `<div class="p-3 bg-emerald-950/40 rounded-lg text-emerald-300 text-center font-bold">0<sub>10</sub> = 0<sub>2</sub></div>`;
+                return;
+            }
+
+            let curr = rawVal;
+            const rows = [];
+
+            while (curr > 0) {
+                const isEven = curr % 2 === 0;
+                const mid = isEven ? curr : curr - 1;
+                const rem = curr - mid;
+                rows.push({ left: curr, mid: mid, rem: rem });
+                curr = Math.floor(mid / 2);
+            }
+
+            let bits = rows.map(r => r.rem).reverse().join('');
+
+            let html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">3-Column Reduction Table:</div>`;
+            html += `<div class="overflow-x-auto"><table class="w-full text-center border-collapse border border-white/10 text-xs">
+                <thead class="bg-slate-900 text-slate-400">
+                    <tr><th class="p-2 border border-white/10">Value (Col 1)</th><th class="p-2 border border-white/10">Even Adj (Col 2)</th><th class="p-2 border border-white/10 text-cyanAccent-400">Remainder Bit (Col 3)</th></tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 bg-slate-950/50">`;
+
+            rows.forEach((r, idx) => {
+                const isMSB = idx === rows.length - 1;
+                const label = isMSB ? ' (MSB)' : (idx === 0 ? ' (LSB)' : '');
+                html += `<tr>
+                    <td class="p-2 border border-white/5">${r.left}</td>
+                    <td class="p-2 border border-white/5">${r.mid}</td>
+                    <td class="p-2 border border-white/5 text-pinkAccent-400 font-bold">${r.rem}${label}</td>
+                </tr>`;
+            });
+
+            html += `</tbody></table></div>`;
+            html += `<div class="mt-3 p-3 bg-emerald-950/40 rounded-lg border border-emerald-500/30 text-emerald-300 font-bold text-sm text-center">
+                ${rawVal}<sub>10</sub> = ${bits}<sub>2</sub>
+            </div>`;
+
+            out.innerHTML = html;
         }
 
-        function prevCard(sessionKey) {
-            indices[sessionKey] = (indices[sessionKey] - 1 + cardsData[sessionKey].length) % cardsData[sessionKey].length;
-            updateCard(cardIds[sessionKey], cardsData[sessionKey][indices[sessionKey]]);
-        }
+        function generateS3TruthTable() {
+            const choice = document.getElementById('s3ExprSelect').value;
+            const out = document.getElementById('s3TableOutput');
+            out.classList.remove('hidden');
 
-        function updateCard(cardId, data) {
-            const card = document.getElementById(cardId);
-            card.classList.remove('flipped');
-            setTimeout(() => {
-                card.querySelector('.card-front').innerText = data.q;
-                card.querySelector('.card-back').innerText = data.a;
-            }, 200);
+            let html = '';
+
+            if (choice === 'demo1') {
+                html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">Demonstration 1: Column-Indexed Reduction for r ∧ ¬s</div>`;
+                html += `<div class="overflow-x-auto"><table class="w-full text-center border border-white/10 text-xs">
+                    <thead class="bg-slate-900 text-slate-400">
+                        <tr><th>Col 1 (r)</th><th>Col 2 (s)</th><th class="text-cyanAccent-400">Col 3 (¬2)</th><th class="text-emerald-400">Col 4 (1 ∧ 3) ➔ r ∧ ¬s</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 bg-slate-950/50">
+                        <tr><td>T</td><td>T</td><td class="text-cyanAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>T</td><td>F</td><td class="text-cyanAccent-400">T</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>F</td><td>T</td><td class="text-cyanAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>F</td><td>F</td><td class="text-cyanAccent-400">T</td><td class="text-rose-400 font-bold">F</td></tr>
+                    </tbody>
+                </table></div>`;
+            } else if (choice === 'demo2') {
+                html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">Demonstration 2: Column-Indexed Reduction for ¬s ∧ ((p ∨ s) ⊕ p)</div>`;
+                html += `<div class="overflow-x-auto"><table class="w-full text-center border border-white/10 text-xs">
+                    <thead class="bg-slate-900 text-slate-400">
+                        <tr><th>Col 1 (p)</th><th>Col 2 (s)</th><th class="text-cyanAccent-400">Col 3 (1 ∨ 2)</th><th class="text-amber-400">Col 4 (3 ⊕ 1)</th><th class="text-pinkAccent-400">Col 5 (¬2)</th><th class="text-emerald-400">Col 6 (5 ∧ 4)</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 bg-slate-950/50">
+                        <tr><td>T</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>T</td><td>F</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">T</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>F</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-amber-400">T</td><td class="text-pinkAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>F</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-amber-400">F</td><td class="text-pinkAccent-400">T</td><td class="text-rose-400 font-bold">F</td></tr>
+                    </tbody>
+                </table></div>`;
+            } else if (choice === 'demo3') {
+                html = `<div class="text-xs text-slate-400 font-sans uppercase font-bold mb-2">Demonstration 3: Column-Indexed Reduction for s ∧ p ∨ r (3 Variables - 8 Rows)</div>`;
+                html += `<div class="overflow-x-auto"><table class="w-full text-center border border-white/10 text-xs">
+                    <thead class="bg-slate-900 text-slate-400">
+                        <tr><th>Col 1 (p)</th><th>Col 2 (r)</th><th>Col 3 (s)</th><th class="text-cyanAccent-400">Col 4 (3 ∧ 1)</th><th class="text-emerald-400">Col 5 (4 ∨ 2) ➔ s ∧ p ∨ r</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5 bg-slate-950/50">
+                        <tr><td>T</td><td>T</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>T</td><td>T</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>T</td><td>F</td><td>T</td><td class="text-cyanAccent-400">T</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>T</td><td>F</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>F</td><td>T</td><td>T</td><td class="text-cyanAccent-400">F</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>F</td><td>T</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-emerald-400 font-bold">T</td></tr>
+                        <tr><td>F</td><td>F</td><td>T</td><td class="text-cyanAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                        <tr><td>F</td><td>F</td><td>F</td><td class="text-cyanAccent-400">F</td><td class="text-rose-400 font-bold">F</td></tr>
+                    </tbody>
+                </table></div>`;
+            }
+
+            out.innerHTML = html;
         }
     </script>
 </body>
